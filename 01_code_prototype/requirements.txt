@@ -1,0 +1,29 @@
+# Python Dependencies for Uncertainty-Gated SLM Research Pipeline
+# Compatible with Python 3.10+ and CUDA 11.8 / 12.1+
+
+# Core Deep Learning & Transformer Stack
+torch>=2.2.0
+transformers>=4.44.0
+accelerate>=0.33.0
+bitsandbytes>=0.43.0
+sentencepiece>=0.2.0
+
+# Vector Search & Embeddings
+faiss-cpu>=1.8.0          # Replace with faiss-gpu if running on dedicated Linux/WSL CUDA cluster
+sentence-transformers>=3.0.0
+
+# Evaluation, Statistics & Datasets
+datasets>=2.20.0
+scipy>=1.13.0
+numpy>=1.26.0
+scikit-learn>=1.5.0
+pandas>=2.2.0
+
+# Hardware Telemetry & Benchmarking
+pynvml>=11.5.0            # NVIDIA GPU power and memory sampling
+
+# Utilities
+tqdm>=4.66.0
+tabulate>=0.9.0
+matplotlib>=3.8.0
+

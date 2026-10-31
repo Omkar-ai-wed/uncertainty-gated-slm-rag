@@ -1,0 +1,29 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+*.venv
+
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary / Scratch / Lock files
+~$*
+temp_*
+*.tmp
+*.log
+pdf_content.txt
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
