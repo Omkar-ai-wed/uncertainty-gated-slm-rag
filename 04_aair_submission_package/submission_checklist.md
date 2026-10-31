@@ -27,7 +27,7 @@
   - No author names, email addresses, or phone numbers.
   - No institutional affiliations, department names, or university logos.
   - No direct acknowledgment of specific lab grants that reveal the institution.
-  - Citations to authors' own prior work phrased in third person (e.g., "In prior work, Doe et al. showed..." rather than "In our prior work...").
+  - Citations to authors' own prior work phrased in third person (e.g., "In prior work, the authors showed..." rather than "In our prior work...").
 - [ ] **Unblinded Title Page File (`TitlePage.docx`):**
   - Contains complete paper title, full author names, institutional affiliations, postal addresses, ORCID iDs, and corresponding author email.
 
