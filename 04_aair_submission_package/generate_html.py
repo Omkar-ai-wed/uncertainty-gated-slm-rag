@@ -411,8 +411,7 @@ def build_aair_html(md_path, html_path):
                     html_out.append('  <tr>')
                     for c_idx, cell in enumerate(row):
                         c_clean = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html.escape(cell))
-                        align = 'left' if c_idx == 0 or r_idx == 0 else 'center'
-                        html_out.append(f'    <{tag} style="text-align:{align};">{c_clean}</{tag}>')
+                        html_out.append(f'    <{tag} style="text-align:left;">{c_clean}</{tag}>')
                     html_out.append('  </tr>')
                 html_out.append('</table>')
             continue
@@ -446,12 +445,15 @@ def build_aair_html(md_path, html_path):
                 html_out.append('<table class="data-table">')
                 for r_idx, row in enumerate(t_rows):
                     tag = 'th' if r_idx == 0 else 'td'
-                    is_sub = (len(row) == 1 and r_idx > 0)
+                    is_sub = (len(row) == 1 and r_idx > 0 and not row[0].startswith('Note:'))
+                    is_note = (len(row) == 1 and row[0].startswith('Note:'))
+                    if is_note:
+                        html_out.append(f'  <tr class="note-row"><td colspan="{max(len(r) for r in t_rows)}" style="text-align:left;">{html.escape(row[0])}</td></tr>')
+                        continue
                     tr_cls = ' class="subgroup"' if is_sub else ''
                     html_out.append(f'  <tr{tr_cls}>')
                     for c_idx, cell in enumerate(row):
-                        align = 'left' if c_idx == 0 or r_idx == 0 else 'center'
-                        html_out.append(f'    <{tag} style="text-align:{align};">{html.escape(cell)}</{tag}>')
+                        html_out.append(f'    <{tag} style="text-align:left;">{html.escape(cell)}</{tag}>')
                     html_out.append('  </tr>')
                 html_out.append('</table>')
             continue

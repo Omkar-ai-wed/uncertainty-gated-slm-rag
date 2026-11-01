@@ -54,18 +54,77 @@ def apply_header_bottom_border(row, border_color="000000"):
         ''')
         tcPr.append(tcBorders)
 
-def style_table_cell(cell, text, is_header=False, is_bold=False, font_size=8.0, align=WD_ALIGN_PARAGRAPH.LEFT):
+def format_aair_table(word_tbl, num_cols, table_num=None):
+    """
+    Applies authentic published AAIR table styling matching Table 2 / Table 4:
+    - Full text width (6.5 inches / 9360 dxa) spanning cleanly across page margins
+    - Proportional column widths summing to 6.5 inches
+    - Three solid black horizontal rules:
+        * Top border: solid 1.0 pt
+        * Header bottom border: solid 0.75 pt
+        * Bottom border: solid 1.0 pt
+    - Zero vertical borders, zero interior horizontal rules
+    - All column headers repeated on subsequent pages (<w:tblHeader/>)
+    - All rows protected against mid-row page splits (<w:cantSplit/>)
+    - Pure white header and cell backgrounds (no shading)
+    """
+    word_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+    word_tbl.autofit = False
+    
+    # 1. Enforce 100% text width (6.5 inches = 9360 dxa)
+    tblPr = word_tbl._tbl.tblPr
+    for child in list(tblPr):
+        if child.tag.endswith('tblW'):
+            tblPr.remove(child)
+    tblW_xml = parse_xml(f'<w:tblW {nsdecls("w")} w:w="9360" w:type="dxa"/>')
+    tblPr.append(tblW_xml)
+    
+    # 2. Apply 3-line borders
+    apply_aair_table_borders(word_tbl)
+    if len(word_tbl.rows) > 0:
+        apply_header_bottom_border(word_tbl.rows[0])
+        
+    # 3. Column width mapping (summing to 6.5 in)
+    col_width_map = {
+        1: [1.10, 1.20, 1.10, 1.20, 1.90],             # Table 1: Method, Fine-Tuning, Latency, Quantized, Limitation
+        2: [1.30, 1.10, 1.60, 2.50],                   # Table 2: Dataset, Total Queries, Knowledge Type, Key Feature
+        3: [1.80, 2.40, 2.30],                         # Table 3: Subsystem, Specification, Operational Role
+        4: [1.10, 1.20, 0.90, 0.70, 0.55, 0.55, 1.50],# Table 4: Model, Category, Mean, Std, Min, Max, 95% CI
+        5: [1.90, 0.90, 0.90, 0.95, 0.95, 0.90],       # Table 5: Model/Setup, PopQA, NQ, TruthfulQA, Latency, Energy
+        6: [2.10, 1.10, 1.10, 1.10, 1.10],             # Table 6: Method, 0%, 25%, 50%, 100%
+        7: [1.15, 1.15, 1.05, 1.05, 1.05, 1.05],       # Table 7: Prefix Horizon, Threshold, PopQA, Bypass, Gating, Total
+        8: [1.80, 0.90, 0.90, 1.00, 1.00, 0.90],       # Table 8: Model/Precision, Memory, PopQA, Pop Ent, Tail Ent, Delta U
+    }
+    
+    widths = col_width_map.get(table_num)
+    if widths is None or len(widths) != num_cols:
+        col_w = 6.5 / num_cols
+        widths = [col_w] * num_cols
+        
+    for r_idx, row in enumerate(word_tbl.rows):
+        trPr = row._tr.get_or_add_trPr()
+        trPr.append(parse_xml(f'<w:cantSplit {nsdecls("w")}/>'))
+        if r_idx == 0:
+            trPr.append(parse_xml(f'<w:tblHeader {nsdecls("w")}/>'))
+            
+        for c_idx, cell in enumerate(row.cells):
+            if c_idx < len(widths):
+                cell.width = Inches(widths[c_idx])
+
+def style_table_cell(cell, text, is_header=False, is_bold=False, is_italic=False, font_size=8.5, align=WD_ALIGN_PARAGRAPH.LEFT):
     """
     Styles table cells matching the published AAIR sample:
     - Clean white background (no dark fill)
     - Bold black header text
+    - All columns LEFT-ALIGNED (matching Table 2 & Table 4 in AAIR)
     - Comfortable cell padding (margins)
     """
     cell.text = text
     p = cell.paragraphs[0]
     p.alignment = align
-    p.paragraph_format.space_before = Pt(3)
-    p.paragraph_format.space_after = Pt(3)
+    p.paragraph_format.space_before = Pt(2.5)
+    p.paragraph_format.space_after = Pt(2.5)
+    p.paragraph_format.line_spacing = 1.05
     
     run = p.runs[0] if p.runs else p.add_run(text)
     run.font.name = 'Cambria'
@@ -74,12 +133,14 @@ def style_table_cell(cell, text, is_header=False, is_bold=False, font_size=8.0, 
     
     if is_header or is_bold:
         run.bold = True
+    if is_italic:
+        run.italic = True
         
     tcPr = cell._tc.get_or_add_tcPr()
     tcMar = parse_xml(f'''
     <w:tcMar {nsdecls("w")}>
-      <w:top w:w="70" w:type="dxa"/>
-      <w:bottom w:w="70" w:type="dxa"/>
+      <w:top w:w="60" w:type="dxa"/>
+      <w:bottom w:w="60" w:type="dxa"/>
       <w:left w:w="100" w:type="dxa"/>
       <w:right w:w="100" w:type="dxa"/>
     </w:tcMar>
@@ -318,29 +379,36 @@ def create_aair_document(md_path, docx_path):
             i += 1
             continue
 
-        # Handle Table Captions (Strictly CENTERED ABOVE tables per published AAIR: "Table 4. *Example*")
-        tbl_cap_match = re.match(r'^\*?\*?(Table\s+[0-9R]+[\.:].*?)\*?\*?$', line)
+        # Handle Table Captions (Strictly CENTERED ABOVE tables per published AAIR: "Table 2. Prompt Configuration...")
+        tbl_cap_match = re.match(r'^\*?\*?(Table\s+([0-9R]+)[\.:].*?)\*?\*?$', line)
         if tbl_cap_match:
             clean_tc = tbl_cap_match.group(1).replace("**", "").strip()
+            table_raw_id = tbl_cap_match.group(2)
+            current_table_num = int(table_raw_id) if table_raw_id.isdigit() else None
+            
             p_tc = doc.add_paragraph()
             p_tc.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p_tc.paragraph_format.space_before = Pt(12)
-            p_tc.paragraph_format.space_after = Pt(4)
+            p_tc.paragraph_format.space_before = Pt(14)
+            p_tc.paragraph_format.space_after = Pt(3)
+            p_tc.paragraph_format.keep_with_next = True
             
             # Extract "Table X." and Title
             tc_m = re.match(r'^(Table\s+[0-9R]+[\.:]?)\s*(.*)', clean_tc)
             if tc_m:
                 r_tlbl = p_tc.add_run(tc_m.group(1).rstrip('.') + '. ')
                 r_tlbl.bold = True
-                r_tlbl.font.size = Pt(9.0)
+                r_tlbl.font.name = 'Cambria'
+                r_tlbl.font.size = Pt(9.5)
                 
                 r_tttl = p_tc.add_run(tc_m.group(2).strip())
                 r_tttl.italic = True
-                r_tttl.font.size = Pt(9.0)
+                r_tttl.font.name = 'Cambria'
+                r_tttl.font.size = Pt(9.5)
             else:
                 r_tc = p_tc.add_run(clean_tc)
                 r_tc.bold = True
-                r_tc.font.size = Pt(9.0)
+                r_tc.font.name = 'Cambria'
+                r_tc.font.size = Pt(9.5)
             i += 1
             continue
 
@@ -364,11 +432,9 @@ def create_aair_document(md_path, docx_path):
             if pipe_rows:
                 max_cols = max(len(r) for r in pipe_rows)
                 word_tbl = doc.add_table(rows=len(pipe_rows), cols=max_cols)
-                word_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
-                word_tbl.autofit = True
-                apply_aair_table_borders(word_tbl)
-                apply_header_bottom_border(word_tbl.rows[0])
+                format_aair_table(word_tbl, max_cols, table_num=current_table_num)
 
+                cell_font_size = 8.0 if max_cols >= 6 else 8.5
                 for r_idx, r_data in enumerate(pipe_rows):
                     is_hdr = (r_idx == 0)
                     for c_idx in range(max_cols):
@@ -376,8 +442,12 @@ def create_aair_document(md_path, docx_path):
                         is_bold_cell = raw_c.startswith('**') and raw_c.endswith('**')
                         clean_c = raw_c.replace('**', '').replace('★', '').strip()
                         cell = word_tbl.cell(r_idx, c_idx)
-                        align = WD_ALIGN_PARAGRAPH.LEFT if c_idx == 0 or is_hdr else WD_ALIGN_PARAGRAPH.CENTER
-                        style_table_cell(cell, clean_c, is_header=is_hdr, is_bold=is_bold_cell, align=align)
+                        style_table_cell(cell, clean_c, is_header=is_hdr, is_bold=is_bold_cell, font_size=cell_font_size, align=WD_ALIGN_PARAGRAPH.LEFT)
+
+                # Spacing below table
+                p_spacer = doc.add_paragraph()
+                p_spacer.paragraph_format.space_before = Pt(4)
+                p_spacer.paragraph_format.space_after = Pt(2)
             continue
 
         # Check if line is start of ASCII / dashed table: --- or ───
@@ -399,19 +469,30 @@ def create_aair_document(md_path, docx_path):
             if table_rows:
                 max_cols = max(len(r) for r in table_rows)
                 word_tbl = doc.add_table(rows=len(table_rows), cols=max_cols)
-                word_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
-                word_tbl.autofit = True
-                apply_aair_table_borders(word_tbl)
-                apply_header_bottom_border(word_tbl.rows[0])
+                format_aair_table(word_tbl, max_cols, table_num=current_table_num)
 
+                cell_font_size = 7.5 if (current_table_num in [4, 5] or max_cols >= 6) else 8.5
                 for row_idx, row_data in enumerate(table_rows):
                     is_hdr = (row_idx == 0)
                     is_subgroup = (len(row_data) == 1 and not is_hdr)
+                    is_note = (len(row_data) == 1 and row_data[0].startswith('Note:'))
+
+                    if is_note:
+                        a = word_tbl.cell(row_idx, 0)
+                        b = word_tbl.cell(row_idx, max_cols - 1)
+                        a.merge(b)
+                        style_table_cell(a, row_data[0], is_header=False, is_italic=True, font_size=7.5, align=WD_ALIGN_PARAGRAPH.LEFT)
+                        continue
+
                     for col_idx in range(max_cols):
                         cell = word_tbl.cell(row_idx, col_idx)
                         text = row_data[col_idx] if col_idx < len(row_data) else ""
-                        align = WD_ALIGN_PARAGRAPH.LEFT if col_idx == 0 or is_hdr else WD_ALIGN_PARAGRAPH.CENTER
-                        style_table_cell(cell, text, is_header=is_hdr, is_bold=is_subgroup, align=align)
+                        style_table_cell(cell, text, is_header=is_hdr, is_bold=is_subgroup, font_size=cell_font_size, align=WD_ALIGN_PARAGRAPH.LEFT)
+
+                # Spacing below table
+                p_spacer = doc.add_paragraph()
+                p_spacer.paragraph_format.space_before = Pt(4)
+                p_spacer.paragraph_format.space_after = Pt(2)
             continue
 
         # Handle Algorithm block
