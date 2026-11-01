@@ -19,7 +19,7 @@ md_lines.append("""# A SEMINAR REPORT ON
 ![JSPM College Logo](assets/jspm_college_logo.jpg)
 
 **SUBMITTED BY:**  
-**Omkar Sachin Shedage** (Roll No: TE-____)  
+**Omkar Sachin Shedage** (Roll No: TE-56)  
 
 **UNDER THE GUIDANCE OF:**  
 **Prof. Snehal Bhoge**  
@@ -42,7 +42,7 @@ This is to certify that the preliminary technical seminar report entitled:
 
 > **“UNCERTAINTY-GATED SELECTIVE RETRIEVAL IN QUANTIZED SMALL LANGUAGE MODELS: MITIGATING NOISE-INDUCED HALLUCINATION AND LATENCY IN EDGE DEPLOYMENT”**
 
-Submitted by **Omkar Sachin Shedage** (Roll No: TE-____) is a bonafide work carried out by him under the supervision of **Prof. Snehal Bhoge** and it is submitted towards partial fulfillment of the requirements of **Savitribai Phule Pune University, Pune**, for the award of the degree of Bachelor of Engineering in Artificial Intelligence & Data Science Engineering.
+Submitted by **Omkar Sachin Shedage** (Roll No: TE-56) is a bonafide work carried out by him under the supervision of **Prof. Snehal Bhoge** and it is submitted towards partial fulfillment of the requirements of **Savitribai Phule Pune University, Pune**, for the award of the degree of Bachelor of Engineering in Artificial Intelligence & Data Science Engineering.
 
 | | | |
 | :---: | :---: | :---: |
@@ -61,7 +61,7 @@ I hereby declare that the seminar report entitled **“Uncertainty-Gated Selecti
 This work is based on original research conducted during the academic year 2025–26, which has also been authored and accepted for international peer-reviewed journal publication in *Advances in Artificial Intelligence Research* (AAIR, DergiPark, e-ISSN: 2757-7422). I further declare that this seminar report or any part thereof has not been submitted previously to this or any other university or institution for the award of any degree, diploma, or fellowship.
 
 **Omkar Sachin Shedage**  
-Roll No: TE-____  
+Roll No: TE-56  
 Department of AI&DS Engineering, JSPM NTC, Pune  
 **Date:** ____________  
 
@@ -80,7 +80,7 @@ I am deeply indebted to **Dr. M. M. Sardeshmukh**, Director of JSPM’s Narhe Te
 Lastly, I extend my heartfelt thanks to all the faculty members of the AI&DS Department, laboratory technical staff, my peers, and my family members whose unending moral support and encouragement enabled me to complete this research endeavor successfully.
 
 **Omkar Sachin Shedage**  
-Roll No: TE-____  
+Roll No: TE-56  
 T.E. (Artificial Intelligence & Data Science)  
 
 ---
@@ -468,3 +468,4 @@ with open(MD_OUT, "w", encoding="utf-8") as f:
     f.write("\n".join(md_lines))
 
 print(f"Generated Markdown Seminar Report: {MD_OUT}")
+
