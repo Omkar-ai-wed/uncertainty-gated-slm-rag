@@ -54,9 +54,9 @@ The vulnerability of generative models to prompt-injected noise has received sub
 With the proliferation of sub-8B models (e.g., Llama-3.2, Gemma-2, Qwen2.5) [6], [7], context distraction becomes acutely severe. Analyses of transformer attention allocation reveal that smaller parameter budgets restrict cross-attention heads from isolating relevant signals within dense textual contexts [16]. When quantized via low-bit techniques such as AWQ [17] or GPTQ [18] to fit within edge memory limits, attention dispersion increases. Despite these vulnerabilities, no prior study has established an integrated, single-pass uncertainty gating mechanism that simultaneously mitigates noise-induced hallucination and optimizes physical hardware efficiency in quantized SLMs.
 
 2.4. Research Gap and Positioning
-Despite the advances described above, a critical gap persists in the literature: no prior work has proposed an inference-time, training-free, single-pass entropy gating mechanism that simultaneously (i) bypasses retrieval on parametrically familiar queries to eliminate noise-induced hallucinations, (ii) preserves retrieval for epistemically uncertain queries without multiple generation passes, and (iii) operates natively on post-quantized (INT4 AWQ) edge-deployed SLMs without any model modification. Self-RAG [10] requires multi-task supervised pre-training that cannot be applied post-hoc to arbitrary quantized models. Rowen [11] achieves noise robustness only at the cost of 2×–4× latency overhead through multilingual multi-candidate sampling. SKR [15] requires training a per-model binary classifier, failing to generalize across SLM families. Our Uncertainty-Gated Selective Retrieval framework fills this gap: it is the first entropy-based, single-forward-pass gating method validated on quantized SLMs (Qwen2.5, Llama-3.2, Gemma-2 in INT4 AWQ) with physical hardware telemetry profiling (Table R1).
+Despite the advances described above, a critical gap persists in the literature: no prior work has proposed an inference-time, training-free, single-pass entropy gating mechanism that simultaneously (i) bypasses retrieval on parametrically familiar queries to eliminate noise-induced hallucinations, (ii) preserves retrieval for epistemically uncertain queries without multiple generation passes, and (iii) operates natively on post-quantized (INT4 AWQ) edge-deployed SLMs without any model modification. Self-RAG [10] requires multi-task supervised pre-training that cannot be applied post-hoc to arbitrary quantized models. Rowen [11] achieves noise robustness only at the cost of 2×–4× latency overhead through multilingual multi-candidate sampling. SKR [15] requires training a per-model binary classifier, failing to generalize across SLM families. Our Uncertainty-Gated Selective Retrieval framework fills this gap: it is the first entropy-based, single-forward-pass gating method validated on quantized SLMs (Qwen2.5, Llama-3.2, Gemma-2 in INT4 AWQ) with physical hardware telemetry profiling (Table 1).
 
-Table R1. Comparison of selective and adaptive retrieval methods
+Table 1. Comparison of selective and adaptive retrieval methods
 ─────────────────────────────────────────────────────────────────────────────────────────────────────
 Method              Requires Fine-Tuning?   Latency Overhead       Works on Quantized SLMs?   Key Limitation
 ─────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -70,12 +70,12 @@ Ours (UG-RAG)       No                      Negligible (< 15 ms)  Yes (INT4 AWQ 
 This section details the benchmark datasets, knowledge base construction, system architecture, mathematical formulations, hardware testbed specifications, and evaluation protocols.
 
 3.1. Datasets
-To evaluate the system across diverse knowledge distributions, three established benchmark datasets were utilized (Table 1):
+To evaluate the system across diverse knowledge distributions, three established benchmark datasets were utilized (Table 2):
 1. PopQA [19]: A large-scale factual question-answering benchmark consisting of 14,267 queries across 16 relationship types. Each entity is linked to its monthly Wikipedia pageview count, enabling precise stratification between high-popularity entities (>10^5 monthly views, testing parametric memory) and long-tail obscure entities (<10^2 monthly views, testing epistemic uncertainty).
 2. Natural Questions (NQ-Open) [20]: A standard benchmark containing 3,610 open-domain queries derived from real Google search logs with human-annotated factual answers.
 3. TruthfulQA [21]: An adversarial benchmark comprising 817 questions across 38 categories designed to elicit human false beliefs, superstitions, and common misconceptions.
 
-Table 1. Benchmark dataset characteristics and distribution
+Table 2. Benchmark dataset characteristics and distribution
 -----------------------------------------------------------------------------------------------------------------
 Dataset              Total Queries   Knowledge Type                Stratification / Key Feature
 -----------------------------------------------------------------------------------------------------------------
@@ -207,9 +207,9 @@ Experiments were executed across three leading open-weight SLM families:
 Models were evaluated under both full 16-bit precision (FP16) and 4-bit Activation-aware Weight Quantization (AWQ) [17]. AWQ protects critical weight channels based on activation magnitude distributions, retaining representational fidelity on memory-constrained edge hardware.
 
 3.6.2. Physical Hardware Testbed & Telemetry Instrumentation
-To ensure scientific replicability and industrial relevance, benchmarks were performed on a standardized workstation environment and cross-validated on an edge-device configuration (Table 2).
+To ensure scientific replicability and industrial relevance, benchmarks were performed on a standardized workstation environment and cross-validated on an edge-device configuration (Table 3).
 
-Table 2. Hardware testbed and software execution environment specifications
+Table 3. Hardware testbed and software execution environment specifications
 -----------------------------------------------------------------------------------------------------------------
 Subsystem                  Specification / Component                      Operational Role in Benchmark
 -----------------------------------------------------------------------------------------------------------------
@@ -239,9 +239,9 @@ Statistical significance was established using two-sided Wilcoxon signed-rank te
 
 4. Experimental Results
 4.1. Empirical Distribution of Prefix Predictive Entropy
-Table 3 reports the empirical distribution of prefix predictive Shannon entropy U(q) computed with M = 3 across popular and long-tail query splits on PopQA using Qwen2.5-0.5B and Llama-3.2-3B.
+Table 4 reports the empirical distribution of prefix predictive Shannon entropy U(q) computed with M = 3 across popular and long-tail query splits on PopQA using Qwen2.5-0.5B and Llama-3.2-3B.
 
-Table 3. Empirical prefix predictive entropy distribution across query categories
+Table 4. Empirical prefix predictive entropy distribution across query categories
 -----------------------------------------------------------------------------------------------------------------
 Model              Category            Mean Entropy (nats)   Std Dev   Min      Max      95% Bootstrap CI
 -----------------------------------------------------------------------------------------------------------------
@@ -254,12 +254,12 @@ Llama-3.2-3B       Long-Tail Entities  2.512                 1.310     0.512    
                    Entropy Delta (DU)  1.828 nats            -         -        -        [1.482, 2.180] (p < 10^-13)
 -----------------------------------------------------------------------------------------------------------------
 
-As demonstrated in Table 3, popular entities exhibit low, tightly clustered prefix entropy (mean 0.809 nats for Qwen2.5 and 0.684 nats for Llama-3.2), reflecting high parametric confidence. Obscure long-tail queries produce elevated entropy (mean 2.369 and 2.512 nats), yielding a statistically significant separation margin DU of 1.560 nats (p = 2.4 x 10^-11, Wilcoxon signed-rank test). Under an empirical threshold tau = 2.0 nats, the gating mechanism accurately bypasses retrieval on 75.0% of popular queries while reliably triggering retrieval for 85.0% of long-tail queries.
+As demonstrated in Table 4, popular entities exhibit low, tightly clustered prefix entropy (mean 0.809 nats for Qwen2.5 and 0.684 nats for Llama-3.2), reflecting high parametric confidence. Obscure long-tail queries produce elevated entropy (mean 2.369 and 2.512 nats), yielding a statistically significant separation margin DU of 1.560 nats (p = 2.4 x 10^-11, Wilcoxon signed-rank test). Under an empirical threshold tau = 2.0 nats, the gating mechanism accurately bypasses retrieval on 75.0% of popular queries while reliably triggering retrieval for 85.0% of long-tail queries.
 
 4.2. End-to-End Task Performance and Hardware Telemetry
-Table 4 consolidates the comparative performance of Closed-Book generation, Naive Static RAG, and our Uncertainty-Gated Selective RAG across PopQA, Natural Questions, and TruthfulQA.
+Table 5 consolidates the comparative performance of Closed-Book generation, Naive Static RAG, and our Uncertainty-Gated Selective RAG across PopQA, Natural Questions, and TruthfulQA.
 
-Table 4. End-to-end performance and hardware telemetry across models and benchmarks
+Table 5. End-to-end performance and hardware telemetry across models and benchmarks
 -----------------------------------------------------------------------------------------------------------------
 Model / Setup                   PopQA (EM %)   NQ (F1 %)   TruthfulQA (%)   Mean Latency (ms)   Energy / Query (J)
 -----------------------------------------------------------------------------------------------------------------
@@ -285,15 +285,15 @@ Gemma-2-2B-IT
 -----------------------------------------------------------------------------------------------------------------
 Note: Bracketed intervals indicate 95% bootstrap confidence intervals (10,000 resamples).
 
-Key Empirical Findings from Table 4:
+Key Empirical Findings from Table 5:
 1. Accuracy Gain Over Static RAG: Across all four model architectures, Uncertainty-Gated RAG consistently outperforms Naive Static RAG in task accuracy (+2.9% on PopQA for Qwen2.5-0.5B, +3.3% for Llama-3.2-3B). This confirms that selectively bypassing retrieval on familiar topics avoids prompt distraction, yielding higher net accuracy than unconditional augmentation.
 2. Latency Reduction: Bypassing vector search and prompt chunk processing reduces mean end-to-end latency from 362.1 ms to 224.8 ms in Llama-3.2-3B (a 37.9% reduction) and from 284.6 ms to 175.4 ms in Qwen2.5-1.5B (a 38.4% reduction).
 3. Energy Conservation: GPU energy consumption per query drops from 79.4 J to 54.2 J for Llama-3.2-3B (a 31.7% saving) and from 58.7 J to 39.8 J for Qwen2.5-1.5B (a 32.2% saving).
 
 4.3. Context Distraction and Noise Injection Stress-Testing
-Table 5 presents the Hallucination Error Rate (HER %) across varying levels of context noise.
+Table 6 presents the Hallucination Error Rate (HER %) across varying levels of context noise.
 
-Table 5. Hallucination Error Rate (HER %) under controlled context noise injection (PopQA test set)
+Table 6. Hallucination Error Rate (HER %) under controlled context noise injection (PopQA test set)
 -----------------------------------------------------------------------------------------------------------------
 Method                          0% Noise (Clean)   25% Noise (Low)   50% Noise (High)   100% Contradictory
 -----------------------------------------------------------------------------------------------------------------
@@ -308,9 +308,9 @@ Under 0% noise, Static RAG achieves an 18.4% error rate. However, when 50% distr
 In contrast, Uncertainty-Gated RAG maintains a low error rate of 28.2% under 50% noise and 39.1% under 100% noise. Because confident queries bypass retrieval, the model is never exposed to misleading distractors. In our qualitative stress test on the query "Who was the first President of the United States?", the model generated "George Washington" closed-book (U = 0.843 nats). Under Static RAG with contradictory context asserting Thomas Jefferson was elected in 1789, the model was deceived, generating: "Thomas Jefferson was unanimously elected as the first President of the United States in 1789." Uncertainty gating prevented this hallucination by executing direct parametric inference.
 
 4.4. Ablation Analysis: Prefix Horizon (M) and Gating Threshold (tau)
-Table 6 evaluates the impact of prefix decoding horizon M in {1, 2, 3, 4, 5} tokens and gating threshold tau in {1.6, 1.8, 2.0, 2.2, 2.4} nats on PopQA using Llama-3.2-3B.
+Table 7 evaluates the impact of prefix decoding horizon M in {1, 2, 3, 4, 5} tokens and gating threshold tau in {1.6, 1.8, 2.0, 2.2, 2.4} nats on PopQA using Llama-3.2-3B.
 
-Table 6. Ablation study on prefix horizon M and threshold τ (Llama-3.2-3B on PopQA)
+Table 7. Ablation study on prefix horizon M and threshold τ (Llama-3.2-3B on PopQA)
 
 | Prefix Horizon M | Threshold τ (nats) | PopQA EM (%) | Bypass Rate (%) | Gating Latency (ms) | Total Latency (ms) |
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -327,14 +327,12 @@ Table 6. Ablation study on prefix horizon M and threshold τ (Llama-3.2-3B on Po
 
 *Bold rows = selected optimal configuration (M = 3, τ = 2.0 nats). Part A: varying M with τ fixed. Part B: varying τ with M = 3 fixed.*
 
-![Table 6 – Ablation Study](table1_ablation.png)
-
-Analysis of Table 6 indicates that M = 3 tokens represents the optimal Pareto inflection point: M = 1 exhibits high variance due to syntactic sentence-starter tokens (e.g., "The", "In"), whereas M = 5 yields marginal accuracy gains (+0.2%) while adding 8.8 ms to gating overhead. For threshold tau, tau = 2.0 nats maximizes exact match accuracy (64.5%) while maintaining a 74.8% bypass rate. Setting tau too high (tau = 2.4) inappropriately bypasses long-tail queries, causing accuracy to degrade to 60.1%.
+Analysis of Table 7 indicates that M = 3 tokens represents the optimal Pareto inflection point: M = 1 exhibits high variance due to syntactic sentence-starter tokens (e.g., "The", "In"), whereas M = 5 yields marginal accuracy gains (+0.2%) while adding 8.8 ms to gating overhead. For threshold tau, tau = 2.0 nats maximizes exact match accuracy (64.5%) while maintaining a 74.8% bypass rate. Setting tau too high (tau = 2.4) inappropriately bypasses long-tail queries, causing accuracy to degrade to 60.1%.
 
 4.5. Quantization Impact: FP16 versus INT4 AWQ
-Table 7 evaluates the interaction between 4-bit Activation-aware Weight Quantization (AWQ) and token entropy gating.
+Table 8 evaluates the interaction between 4-bit Activation-aware Weight Quantization (AWQ) and token entropy gating.
 
-Table 7. Quantization comparison: FP16 vs. INT4 AWQ (Llama-3.2-3B and Qwen2.5-1.5B)
+Table 8. Quantization comparison: FP16 vs. INT4 AWQ (Llama-3.2-3B and Qwen2.5-1.5B)
 -----------------------------------------------------------------------------------------------------------------
 Model / Precision            Memory (GB)   PopQA EM (%)   Mean Entropy (Pop)   Mean Entropy (Tail)   Delta U (nats)
 -----------------------------------------------------------------------------------------------------------------

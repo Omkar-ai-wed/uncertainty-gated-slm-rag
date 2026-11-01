@@ -12,7 +12,7 @@
 
 ### Step 1: Manuscript Formatting & Content Rules
 - [ ] **Word Processor:** Manuscript prepared in Microsoft Word (.docx) format using the official AAIR template.
-- [ ] **Typography:** All headings and body text formatted in **Cambria** font (Main text 9 pt, justified, two-column layout with 85 mm width and 10 mm gutter).
+- [ ] **Typography:** All headings and body text formatted in **Cambria** font (Main text 9.5 pt, 1.15 line spacing, justified, single-column layout matching published AAIR papers).
 - [ ] **Title:** 14 pt Cambria centered. English title provided (Turkish translation included per template).
 - [ ] **Abstract:** Fully justified, 8 pt italics, strictly $\le 300$ words (Current draft: 218 words).
 - [ ] **Keywords:** Exactly 3–6 keywords provided immediately following the abstract.

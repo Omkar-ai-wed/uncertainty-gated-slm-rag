@@ -158,30 +158,40 @@
   table.data-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 14px 0 10px 0;
+    margin: 14px 0 12px 0;
     font-size: 8.5pt;
+    border-top: 1.2px solid #000;
+    border-bottom: 1.2px solid #000;
   }
   table.data-table th, table.data-table td {
-    border-top: 1px solid #333;
-    border-bottom: 1px solid #333;
-    padding: 5px 6px;
+    border: none;
+    padding: 5px 8px;
     text-align: left;
   }
   table.data-table th {
-    background-color: #f2f5f8;
+    background-color: transparent;
     font-weight: bold;
-    border-bottom: 1.5px solid #000;
+    border-bottom: 1.0px solid #000;
+    color: #000;
   }
-  table.data-table tr:hover {
-    background-color: #fcfcfc;
+  table.data-table tr.subgroup td {
+    font-weight: bold;
+    font-style: italic;
+    background-color: transparent;
+    padding-top: 6px;
   }
   .table-caption {
     font-size: 9pt;
+    margin-top: 16px;
+    margin-bottom: 5px;
+    text-align: center;
+    color: #000;
+  }
+  .table-caption-lbl {
     font-weight: bold;
-    margin-top: 14px;
-    margin-bottom: 4px;
-    text-align: left;
-    color: #1a202c;
+  }
+  .table-caption-title {
+    font-style: italic;
   }
   .figure-box {
     text-align: center;
@@ -293,77 +303,77 @@
 <p>The vulnerability of generative models to prompt-injected noise has received substantial study. Shi et al. [8] proved that language models are easily distracted when irrelevant text is introduced into the prompt, causing models to abandon correct parametric knowledge. Yoran et al. [9] introduced Robust-RAG, showing that open-source models experience accuracy drops of up to 34% when exposed to noisy or contradictory passages, and proposed training an auxiliary Natural Language Inference (NLI) filter to discard unhelpful passages.</p>
 <p>With the proliferation of sub-8B models (e.g., Llama-3.2, Gemma-2, Qwen2.5) [6], [7], context distraction becomes acutely severe. Analyses of transformer attention allocation reveal that smaller parameter budgets restrict cross-attention heads from isolating relevant signals within dense textual contexts [16]. When quantized via low-bit techniques such as AWQ [17] or GPTQ [18] to fit within edge memory limits, attention dispersion increases. Despite these vulnerabilities, no prior study has established an integrated, single-pass uncertainty gating mechanism that simultaneously mitigates noise-induced hallucination and optimizes physical hardware efficiency in quantized SLMs.</p>
 <h3 class="subsec-heading">2.4. Research Gap and Positioning</h3>
-<p>Despite the advances described above, a critical gap persists in the literature: no prior work has proposed an inference-time, training-free, single-pass entropy gating mechanism that simultaneously (i) bypasses retrieval on parametrically familiar queries to eliminate noise-induced hallucinations, (ii) preserves retrieval for epistemically uncertain queries without multiple generation passes, and (iii) operates natively on post-quantized (INT4 AWQ) edge-deployed SLMs without any model modification. Self-RAG [10] requires multi-task supervised pre-training that cannot be applied post-hoc to arbitrary quantized models. Rowen [11] achieves noise robustness only at the cost of 2×–4× latency overhead through multilingual multi-candidate sampling. SKR [15] requires training a per-model binary classifier, failing to generalize across SLM families. Our Uncertainty-Gated Selective Retrieval framework fills this gap: it is the first entropy-based, single-forward-pass gating method validated on quantized SLMs (Qwen2.5, Llama-3.2, Gemma-2 in INT4 AWQ) with physical hardware telemetry profiling (Table R1).</p>
-<div class="table-caption">Table R1. Comparison of selective and adaptive retrieval methods</div>
+<p>Despite the advances described above, a critical gap persists in the literature: no prior work has proposed an inference-time, training-free, single-pass entropy gating mechanism that simultaneously (i) bypasses retrieval on parametrically familiar queries to eliminate noise-induced hallucinations, (ii) preserves retrieval for epistemically uncertain queries without multiple generation passes, and (iii) operates natively on post-quantized (INT4 AWQ) edge-deployed SLMs without any model modification. Self-RAG [10] requires multi-task supervised pre-training that cannot be applied post-hoc to arbitrary quantized models. Rowen [11] achieves noise robustness only at the cost of 2×–4× latency overhead through multilingual multi-candidate sampling. SKR [15] requires training a per-model binary classifier, failing to generalize across SLM families. Our Uncertainty-Gated Selective Retrieval framework fills this gap: it is the first entropy-based, single-forward-pass gating method validated on quantized SLMs (Qwen2.5, Llama-3.2, Gemma-2 in INT4 AWQ) with physical hardware telemetry profiling (Table 1).</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 1.</span> <span class="table-caption-title">Comparison of selective and adaptive retrieval methods</span></div>
 <table class="data-table">
   <tr>
-    <th>Method</th>
-    <th>Requires Fine-Tuning?</th>
-    <th>Latency Overhead</th>
-    <th>Works on Quantized SLMs?</th>
-    <th>Key Limitation</th>
+    <th style="text-align:left;">Method</th>
+    <th style="text-align:left;">Requires Fine-Tuning?</th>
+    <th style="text-align:left;">Latency Overhead</th>
+    <th style="text-align:left;">Works on Quantized SLMs?</th>
+    <th style="text-align:left;">Key Limitation</th>
   </tr>
   <tr>
-    <td>Self-RAG [10]</td>
-    <td>Yes (multi-task PT)</td>
-    <td>Low (single pass)</td>
-    <td>No (modifies weights)</td>
-    <td>Cannot be applied post-hoc to off-the-shelf models</td>
+    <td style="text-align:left;">Self-RAG [10]</td>
+    <td style="text-align:center;">Yes (multi-task PT)</td>
+    <td style="text-align:center;">Low (single pass)</td>
+    <td style="text-align:center;">No (modifies weights)</td>
+    <td style="text-align:center;">Cannot be applied post-hoc to off-the-shelf models</td>
   </tr>
   <tr>
-    <td>Rowen [11]</td>
-    <td>No</td>
-    <td>Very High (200–400%)</td>
-    <td>Yes (black-box)</td>
-    <td>Triples latency; negates SLM efficiency advantage</td>
+    <td style="text-align:left;">Rowen [11]</td>
+    <td style="text-align:center;">No</td>
+    <td style="text-align:center;">Very High (200–400%)</td>
+    <td style="text-align:center;">Yes (black-box)</td>
+    <td style="text-align:center;">Triples latency; negates SLM efficiency advantage</td>
   </tr>
   <tr>
-    <td>SKR [15]</td>
-    <td>Yes (classifier)</td>
-    <td>Low (single pass)</td>
-    <td>No (model-specific)</td>
-    <td>Classifier must be retrained per target LLM family</td>
+    <td style="text-align:left;">SKR [15]</td>
+    <td style="text-align:center;">Yes (classifier)</td>
+    <td style="text-align:center;">Low (single pass)</td>
+    <td style="text-align:center;">No (model-specific)</td>
+    <td style="text-align:center;">Classifier must be retrained per target LLM family</td>
   </tr>
   <tr>
-    <td>Ours (UG-RAG)</td>
-    <td>No</td>
-    <td>Negligible (&lt; 15 ms)</td>
-    <td>Yes (INT4 AWQ native)</td>
-    <td>Threshold recalibration needed for new domains</td>
+    <td style="text-align:left;">Ours (UG-RAG)</td>
+    <td style="text-align:center;">No</td>
+    <td style="text-align:center;">Negligible (&lt; 15 ms)</td>
+    <td style="text-align:center;">Yes (INT4 AWQ native)</td>
+    <td style="text-align:center;">Threshold recalibration needed for new domains</td>
   </tr>
 </table>
 <h2 class="sec-heading">3. Materials and Methods</h2>
 <p>This section details the benchmark datasets, knowledge base construction, system architecture, mathematical formulations, hardware testbed specifications, and evaluation protocols.</p>
 <h3 class="subsec-heading">3.1. Datasets</h3>
-<p>To evaluate the system across diverse knowledge distributions, three established benchmark datasets were utilized (Table 1):</p>
+<p>To evaluate the system across diverse knowledge distributions, three established benchmark datasets were utilized (Table 2):</p>
 <h2 class="sec-heading">1. PopQA [19]: A large-scale factual question-answering benchmark consisting of 14,267 queries across 16 relationship types. Each entity is linked to its monthly Wikipedia pageview count, enabling precise stratification between high-popularity entities (&gt;10^5 monthly views, testing parametric memory) and long-tail obscure entities (&lt;10^2 monthly views, testing epistemic uncertainty).</h2>
 <h2 class="sec-heading">2. Natural Questions (NQ-Open) [20]: A standard benchmark containing 3,610 open-domain queries derived from real Google search logs with human-annotated factual answers.</h2>
 <h2 class="sec-heading">3. TruthfulQA [21]: An adversarial benchmark comprising 817 questions across 38 categories designed to elicit human false beliefs, superstitions, and common misconceptions.</h2>
-<div class="table-caption">Table 1. Benchmark dataset characteristics and distribution</div>
+<div class="table-caption"><span class="table-caption-lbl">Table 2.</span> <span class="table-caption-title">Benchmark dataset characteristics and distribution</span></div>
 <table class="data-table">
   <tr>
-    <th>Dataset</th>
-    <th>Total Queries</th>
-    <th>Knowledge Type</th>
-    <th>Stratification / Key Feature</th>
+    <th style="text-align:left;">Dataset</th>
+    <th style="text-align:left;">Total Queries</th>
+    <th style="text-align:left;">Knowledge Type</th>
+    <th style="text-align:left;">Stratification / Key Feature</th>
   </tr>
   <tr>
-    <td>PopQA</td>
-    <td>14,267</td>
-    <td>Factual Entity Knowledge</td>
-    <td>Stratified by Wikipedia pageviews (Popular vs. Tail)</td>
+    <td style="text-align:left;">PopQA</td>
+    <td style="text-align:center;">14,267</td>
+    <td style="text-align:center;">Factual Entity Knowledge</td>
+    <td style="text-align:center;">Stratified by Wikipedia pageviews (Popular vs. Tail)</td>
   </tr>
   <tr>
-    <td>Natural Questions</td>
-    <td>3,610</td>
-    <td>Open-Domain User Queries</td>
-    <td>Real Google search logs with verified gold answers</td>
+    <td style="text-align:left;">Natural Questions</td>
+    <td style="text-align:center;">3,610</td>
+    <td style="text-align:center;">Open-Domain User Queries</td>
+    <td style="text-align:center;">Real Google search logs with verified gold answers</td>
   </tr>
   <tr>
-    <td>TruthfulQA</td>
-    <td>817</td>
-    <td>Adversarial Misconceptions</td>
-    <td>Designed to test resistance to imitation falsehoods</td>
+    <td style="text-align:left;">TruthfulQA</td>
+    <td style="text-align:center;">817</td>
+    <td style="text-align:center;">Adversarial Misconceptions</td>
+    <td style="text-align:center;">Designed to test resistance to imitation falsehoods</td>
   </tr>
 </table>
 <h3 class="subsec-heading">3.2. Knowledge Base Construction and Retrieval Index</h3>
@@ -468,67 +478,67 @@ Output: Generated answer y
 <ul><li>Qwen2.5 (0.5B-Instruct and 1.5B-Instruct) [7]</li><li>Llama-3.2 (1B-Instruct and 3B-Instruct) [6]</li><li>Gemma-2 (2B-IT and 9B-IT) [24]</li></ul>
 <p>Models were evaluated under both full 16-bit precision (FP16) and 4-bit Activation-aware Weight Quantization (AWQ) [17]. AWQ protects critical weight channels based on activation magnitude distributions, retaining representational fidelity on memory-constrained edge hardware.</p>
 <h4 class="subsubsec-heading">3.6.2. Physical Hardware Testbed &amp; Telemetry Instrumentation</h4>
-<p>To ensure scientific replicability and industrial relevance, benchmarks were performed on a standardized workstation environment and cross-validated on an edge-device configuration (Table 2).</p>
-<div class="table-caption">Table 2. Hardware testbed and software execution environment specifications</div>
+<p>To ensure scientific replicability and industrial relevance, benchmarks were performed on a standardized workstation environment and cross-validated on an edge-device configuration (Table 3).</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 3.</span> <span class="table-caption-title">Hardware testbed and software execution environment specifications</span></div>
 <table class="data-table">
   <tr>
-    <th>Subsystem</th>
-    <th>Specification / Component</th>
-    <th>Operational Role in Benchmark</th>
+    <th style="text-align:left;">Subsystem</th>
+    <th style="text-align:left;">Specification / Component</th>
+    <th style="text-align:left;">Operational Role in Benchmark</th>
   </tr>
   <tr>
-    <td>Host Processor (CPU)</td>
-    <td>Intel Core i9-14900K (24 cores / 32 threads)</td>
-    <td>Host orchestration, tokenization, batch control</td>
+    <td style="text-align:left;">Host Processor (CPU)</td>
+    <td style="text-align:center;">Intel Core i9-14900K (24 cores / 32 threads)</td>
+    <td style="text-align:center;">Host orchestration, tokenization, batch control</td>
   </tr>
   <tr>
-    <td>Host System Memory</td>
-    <td>64 GB DDR5-5600 MT/s (Dual Channel)</td>
-    <td>FAISS in-memory index mapping (8.5 GB RAM)</td>
+    <td style="text-align:left;">Host System Memory</td>
+    <td style="text-align:center;">64 GB DDR5-5600 MT/s (Dual Channel)</td>
+    <td style="text-align:center;">FAISS in-memory index mapping (8.5 GB RAM)</td>
   </tr>
   <tr>
-    <td>Primary GPU Accelerator</td>
-    <td>NVIDIA GeForce RTX 4090 (Ada Lovelace)</td>
-    <td>FP16 &amp; INT4 AWQ model inference execution</td>
+    <td style="text-align:left;">Primary GPU Accelerator</td>
+    <td style="text-align:center;">NVIDIA GeForce RTX 4090 (Ada Lovelace)</td>
+    <td style="text-align:center;">FP16 &amp; INT4 AWQ model inference execution</td>
   </tr>
   <tr>
-    <td>GPU VRAM &amp; Bandwidth</td>
-    <td>24 GB GDDR6X @ 1,008 GB/s (384-bit bus)</td>
-    <td>Weights &amp; KV-cache allocation without offloading</td>
+    <td style="text-align:left;">GPU VRAM &amp; Bandwidth</td>
+    <td style="text-align:center;">24 GB GDDR6X @ 1,008 GB/s (384-bit bus)</td>
+    <td style="text-align:center;">Weights &amp; KV-cache allocation without offloading</td>
   </tr>
   <tr>
-    <td>Thermal Design Power (TDP) 450 W (Base power ceiling)</td>
-    <td>Dynamic power envelope profiling</td>
+    <td style="text-align:left;">Thermal Design Power (TDP) 450 W (Base power ceiling)</td>
+    <td style="text-align:center;">Dynamic power envelope profiling</td>
   </tr>
   <tr>
-    <td>Secondary / Edge Testbed</td>
-    <td>Intel Core Ultra CPU / Windows 11</td>
-    <td>Single-pass edge CPU inference validation</td>
+    <td style="text-align:left;">Secondary / Edge Testbed</td>
+    <td style="text-align:center;">Intel Core Ultra CPU / Windows 11</td>
+    <td style="text-align:center;">Single-pass edge CPU inference validation</td>
   </tr>
   <tr>
-    <td>Local Storage</td>
-    <td>2 TB PCIe 4.0 NVMe SSD (7,000 MB/s read)</td>
-    <td>Low-latency vector store cold-start caching</td>
+    <td style="text-align:left;">Local Storage</td>
+    <td style="text-align:center;">2 TB PCIe 4.0 NVMe SSD (7,000 MB/s read)</td>
+    <td style="text-align:center;">Low-latency vector store cold-start caching</td>
   </tr>
   <tr>
-    <td>Compute Stack</td>
-    <td>CUDA 12.4, cuDNN 9.1, PyTorch 2.15</td>
-    <td>Kernel execution &amp; tensor operations</td>
+    <td style="text-align:left;">Compute Stack</td>
+    <td style="text-align:center;">CUDA 12.4, cuDNN 9.1, PyTorch 2.15</td>
+    <td style="text-align:center;">Kernel execution &amp; tensor operations</td>
   </tr>
   <tr>
-    <td>Model Framework</td>
-    <td>Hugging Face Transformers 5.22, Accelerate</td>
-    <td>Model orchestration &amp; AWQ kernel dispatch</td>
+    <td style="text-align:left;">Model Framework</td>
+    <td style="text-align:center;">Hugging Face Transformers 5.22, Accelerate</td>
+    <td style="text-align:center;">Model orchestration &amp; AWQ kernel dispatch</td>
   </tr>
   <tr>
-    <td>Telemetry Sampling</td>
-    <td>NVIDIA Management Library (pynvml v11.5.0)</td>
-    <td>50 ms interval background power polling daemon</td>
+    <td style="text-align:left;">Telemetry Sampling</td>
+    <td style="text-align:center;">NVIDIA Management Library (pynvml v11.5.0)</td>
+    <td style="text-align:center;">50 ms interval background power polling daemon</td>
   </tr>
   <tr>
-    <td>Timing Synchronization</td>
-    <td>torch.cuda.Event(enable_timing=True)</td>
-    <td>Microsecond-accurate kernel latency capture</td>
+    <td style="text-align:left;">Timing Synchronization</td>
+    <td style="text-align:center;">torch.cuda.Event(enable_timing=True)</td>
+    <td style="text-align:center;">Microsecond-accurate kernel latency capture</td>
   </tr>
 </table>
 <h3 class="subsec-heading">3.7. Evaluation Metrics and Hardware Telemetry</h3>
@@ -541,321 +551,388 @@ Output: Generated answer y
 <p>Statistical significance was established using two-sided Wilcoxon signed-rank tests on paired performance scores across all test splits. Nonparametric bootstrap resampling with 10,000 iterations was applied to estimate 95% confidence intervals (CI) for mean accuracy improvements, latency reductions, and entropy separation margins.</p>
 <h2 class="sec-heading">4. Experimental Results</h2>
 <h3 class="subsec-heading">4.1. Empirical Distribution of Prefix Predictive Entropy</h3>
-<p>Table 3 reports the empirical distribution of prefix predictive Shannon entropy U(q) computed with M = 3 across popular and long-tail query splits on PopQA using Qwen2.5-0.5B and Llama-3.2-3B.</p>
-<div class="table-caption">Table 3. Empirical prefix predictive entropy distribution across query categories</div>
+<p>Table 4 reports the empirical distribution of prefix predictive Shannon entropy U(q) computed with M = 3 across popular and long-tail query splits on PopQA using Qwen2.5-0.5B and Llama-3.2-3B.</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 4.</span> <span class="table-caption-title">Empirical prefix predictive entropy distribution across query categories</span></div>
 <table class="data-table">
   <tr>
-    <th>Model</th>
-    <th>Category</th>
-    <th>Mean Entropy (nats)</th>
-    <th>Std Dev</th>
-    <th>Min</th>
-    <th>Max</th>
-    <th>95% Bootstrap CI</th>
+    <th style="text-align:left;">Model</th>
+    <th style="text-align:left;">Category</th>
+    <th style="text-align:left;">Mean Entropy (nats)</th>
+    <th style="text-align:left;">Std Dev</th>
+    <th style="text-align:left;">Min</th>
+    <th style="text-align:left;">Max</th>
+    <th style="text-align:left;">95% Bootstrap CI</th>
   </tr>
   <tr>
-    <td>Qwen2.5-0.5B</td>
-    <td>Popular Entities</td>
-    <td>0.809</td>
-    <td>0.342</td>
-    <td>0.018</td>
-    <td>1.211</td>
-    <td>[0.724, 0.898]</td>
+    <td style="text-align:left;">Qwen2.5-0.5B</td>
+    <td style="text-align:center;">Popular Entities</td>
+    <td style="text-align:center;">0.809</td>
+    <td style="text-align:center;">0.342</td>
+    <td style="text-align:center;">0.018</td>
+    <td style="text-align:center;">1.211</td>
+    <td style="text-align:center;">[0.724, 0.898]</td>
   </tr>
   <tr>
-    <td>Qwen2.5-0.5B</td>
-    <td>Long-Tail Entities</td>
-    <td>2.369</td>
-    <td>1.285</td>
-    <td>0.456</td>
-    <td>5.417</td>
-    <td>[2.012, 2.745]</td>
+    <td style="text-align:left;">Qwen2.5-0.5B</td>
+    <td style="text-align:center;">Long-Tail Entities</td>
+    <td style="text-align:center;">2.369</td>
+    <td style="text-align:center;">1.285</td>
+    <td style="text-align:center;">0.456</td>
+    <td style="text-align:center;">5.417</td>
+    <td style="text-align:center;">[2.012, 2.745]</td>
   </tr>
   <tr>
-    <td>Entropy Delta (DU)</td>
-    <td>1.560 nats</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>[1.240, 1.885] (p &lt; 10^-11)</td>
+    <td style="text-align:left;">Entropy Delta (DU)</td>
+    <td style="text-align:center;">1.560 nats</td>
+    <td style="text-align:center;">-</td>
+    <td style="text-align:center;">-</td>
+    <td style="text-align:center;">-</td>
+    <td style="text-align:center;">[1.240, 1.885] (p &lt; 10^-11)</td>
   </tr>
   <tr>
-    <td>Llama-3.2-3B</td>
-    <td>Popular Entities</td>
-    <td>0.684</td>
-    <td>0.291</td>
-    <td>0.012</td>
-    <td>1.104</td>
-    <td>[0.612, 0.758]</td>
+    <td style="text-align:left;">Llama-3.2-3B</td>
+    <td style="text-align:center;">Popular Entities</td>
+    <td style="text-align:center;">0.684</td>
+    <td style="text-align:center;">0.291</td>
+    <td style="text-align:center;">0.012</td>
+    <td style="text-align:center;">1.104</td>
+    <td style="text-align:center;">[0.612, 0.758]</td>
   </tr>
   <tr>
-    <td>Llama-3.2-3B</td>
-    <td>Long-Tail Entities</td>
-    <td>2.512</td>
-    <td>1.310</td>
-    <td>0.512</td>
-    <td>5.680</td>
-    <td>[2.145, 2.890]</td>
+    <td style="text-align:left;">Llama-3.2-3B</td>
+    <td style="text-align:center;">Long-Tail Entities</td>
+    <td style="text-align:center;">2.512</td>
+    <td style="text-align:center;">1.310</td>
+    <td style="text-align:center;">0.512</td>
+    <td style="text-align:center;">5.680</td>
+    <td style="text-align:center;">[2.145, 2.890]</td>
   </tr>
   <tr>
-    <td>Entropy Delta (DU)</td>
-    <td>1.828 nats</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>[1.482, 2.180] (p &lt; 10^-13)</td>
+    <td style="text-align:left;">Entropy Delta (DU)</td>
+    <td style="text-align:center;">1.828 nats</td>
+    <td style="text-align:center;">-</td>
+    <td style="text-align:center;">-</td>
+    <td style="text-align:center;">-</td>
+    <td style="text-align:center;">[1.482, 2.180] (p &lt; 10^-13)</td>
   </tr>
 </table>
-<p>As demonstrated in Table 3, popular entities exhibit low, tightly clustered prefix entropy (mean 0.809 nats for Qwen2.5 and 0.684 nats for Llama-3.2), reflecting high parametric confidence. Obscure long-tail queries produce elevated entropy (mean 2.369 and 2.512 nats), yielding a statistically significant separation margin DU of 1.560 nats (p = 2.4 x 10^-11, Wilcoxon signed-rank test). Under an empirical threshold tau = 2.0 nats, the gating mechanism accurately bypasses retrieval on 75.0% of popular queries while reliably triggering retrieval for 85.0% of long-tail queries.</p>
+<p>As demonstrated in Table 4, popular entities exhibit low, tightly clustered prefix entropy (mean 0.809 nats for Qwen2.5 and 0.684 nats for Llama-3.2), reflecting high parametric confidence. Obscure long-tail queries produce elevated entropy (mean 2.369 and 2.512 nats), yielding a statistically significant separation margin DU of 1.560 nats (p = 2.4 x 10^-11, Wilcoxon signed-rank test). Under an empirical threshold tau = 2.0 nats, the gating mechanism accurately bypasses retrieval on 75.0% of popular queries while reliably triggering retrieval for 85.0% of long-tail queries.</p>
 <h3 class="subsec-heading">4.2. End-to-End Task Performance and Hardware Telemetry</h3>
-<p>Table 4 consolidates the comparative performance of Closed-Book generation, Naive Static RAG, and our Uncertainty-Gated Selective RAG across PopQA, Natural Questions, and TruthfulQA.</p>
-<div class="table-caption">Table 4. End-to-end performance and hardware telemetry across models and benchmarks</div>
+<p>Table 5 consolidates the comparative performance of Closed-Book generation, Naive Static RAG, and our Uncertainty-Gated Selective RAG across PopQA, Natural Questions, and TruthfulQA.</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 5.</span> <span class="table-caption-title">End-to-end performance and hardware telemetry across models and benchmarks</span></div>
 <table class="data-table">
   <tr>
-    <th>Model / Setup</th>
-    <th>PopQA (EM %)</th>
-    <th>NQ (F1 %)</th>
-    <th>TruthfulQA (%)</th>
-    <th>Mean Latency (ms)</th>
-    <th>Energy / Query (J)</th>
+    <th style="text-align:left;">Model / Setup</th>
+    <th style="text-align:left;">PopQA (EM %)</th>
+    <th style="text-align:left;">NQ (F1 %)</th>
+    <th style="text-align:left;">TruthfulQA (%)</th>
+    <th style="text-align:left;">Mean Latency (ms)</th>
+    <th style="text-align:left;">Energy / Query (J)</th>
+  </tr>
+  <tr class="subgroup">
+    <td style="text-align:left;">Qwen2.5-0.5B-Instruct</td>
   </tr>
   <tr>
-    <td>Qwen2.5-0.5B-Instruct</td>
+    <td style="text-align:left;">Closed-Book Baseline</td>
+    <td style="text-align:center;">28.4</td>
+    <td style="text-align:center;">20.1</td>
+    <td style="text-align:center;">36.2</td>
+    <td style="text-align:center;">42.1 [39, 45]</td>
+    <td style="text-align:center;">8.4 [7.8, 9.1]</td>
   </tr>
   <tr>
-    <td>Closed-Book Baseline</td>
-    <td>28.4</td>
-    <td>20.1</td>
-    <td>36.2</td>
-    <td>42.1 [39, 45]</td>
-    <td>8.4 [7.8, 9.1]</td>
+    <td style="text-align:left;">Naive Static RAG</td>
+    <td style="text-align:center;">51.2</td>
+    <td style="text-align:center;">38.6</td>
+    <td style="text-align:center;">47.5</td>
+    <td style="text-align:center;">194.2 [185, 203]</td>
+    <td style="text-align:center;">41.2 [38.5, 43.8]</td>
   </tr>
   <tr>
-    <td>Naive Static RAG</td>
-    <td>51.2</td>
-    <td>38.6</td>
-    <td>47.5</td>
-    <td>194.2 [185, 203]</td>
-    <td>41.2 [38.5, 43.8]</td>
+    <td style="text-align:left;">Uncertainty-Gated (Ours)</td>
+    <td style="text-align:center;">54.1</td>
+    <td style="text-align:center;">40.4</td>
+    <td style="text-align:center;">51.8</td>
+    <td style="text-align:center;">120.1 [114, 126]</td>
+    <td style="text-align:center;">28.2 [26.1, 30.4]</td>
+  </tr>
+  <tr class="subgroup">
+    <td style="text-align:left;">Qwen2.5-1.5B-Instruct</td>
   </tr>
   <tr>
-    <td>Uncertainty-Gated (Ours)</td>
-    <td>54.1</td>
-    <td>40.4</td>
-    <td>51.8</td>
-    <td>120.1 [114, 126]</td>
-    <td>28.2 [26.1, 30.4]</td>
+    <td style="text-align:left;">Closed-Book Baseline</td>
+    <td style="text-align:center;">31.4</td>
+    <td style="text-align:center;">22.8</td>
+    <td style="text-align:center;">38.6</td>
+    <td style="text-align:center;">68.2 [64, 72]</td>
+    <td style="text-align:center;">12.4 [11.5, 13.3]</td>
   </tr>
   <tr>
-    <td>Qwen2.5-1.5B-Instruct</td>
+    <td style="text-align:left;">Naive Static RAG</td>
+    <td style="text-align:center;">54.2</td>
+    <td style="text-align:center;">41.5</td>
+    <td style="text-align:center;">49.2</td>
+    <td style="text-align:center;">284.6 [271, 298]</td>
+    <td style="text-align:center;">58.7 [55.2, 62.1]</td>
   </tr>
   <tr>
-    <td>Closed-Book Baseline</td>
-    <td>31.4</td>
-    <td>22.8</td>
-    <td>38.6</td>
-    <td>68.2 [64, 72]</td>
-    <td>12.4 [11.5, 13.3]</td>
+    <td style="text-align:left;">Uncertainty-Gated (Ours)</td>
+    <td style="text-align:center;">56.8</td>
+    <td style="text-align:center;">42.9</td>
+    <td style="text-align:center;">53.4</td>
+    <td style="text-align:center;">175.4 [166, 184]</td>
+    <td style="text-align:center;">39.8 [37.2, 42.5]</td>
+  </tr>
+  <tr class="subgroup">
+    <td style="text-align:left;">Llama-3.2-3B-Instruct</td>
   </tr>
   <tr>
-    <td>Naive Static RAG</td>
-    <td>54.2</td>
-    <td>41.5</td>
-    <td>49.2</td>
-    <td>284.6 [271, 298]</td>
-    <td>58.7 [55.2, 62.1]</td>
+    <td style="text-align:left;">Closed-Book Baseline</td>
+    <td style="text-align:center;">39.8</td>
+    <td style="text-align:center;">29.4</td>
+    <td style="text-align:center;">44.1</td>
+    <td style="text-align:center;">94.5 [89, 100]</td>
+    <td style="text-align:center;">18.6 [17.2, 19.9]</td>
   </tr>
   <tr>
-    <td>Uncertainty-Gated (Ours)</td>
-    <td>56.8</td>
-    <td>42.9</td>
-    <td>53.4</td>
-    <td>175.4 [166, 184]</td>
-    <td>39.8 [37.2, 42.5]</td>
+    <td style="text-align:left;">Naive Static RAG</td>
+    <td style="text-align:center;">61.2</td>
+    <td style="text-align:center;">48.7</td>
+    <td style="text-align:center;">56.8</td>
+    <td style="text-align:center;">362.1 [345, 379]</td>
+    <td style="text-align:center;">79.4 [74.8, 84.1]</td>
   </tr>
   <tr>
-    <td>Llama-3.2-3B-Instruct</td>
+    <td style="text-align:left;">Uncertainty-Gated (Ours)</td>
+    <td style="text-align:center;">64.5</td>
+    <td style="text-align:center;">50.2</td>
+    <td style="text-align:center;">61.9</td>
+    <td style="text-align:center;">224.8 [214, 235]</td>
+    <td style="text-align:center;">54.2 [51.0, 57.5]</td>
+  </tr>
+  <tr class="subgroup">
+    <td style="text-align:left;">Gemma-2-2B-IT</td>
   </tr>
   <tr>
-    <td>Closed-Book Baseline</td>
-    <td>39.8</td>
-    <td>29.4</td>
-    <td>44.1</td>
-    <td>94.5 [89, 100]</td>
-    <td>18.6 [17.2, 19.9]</td>
+    <td style="text-align:left;">Closed-Book Baseline</td>
+    <td style="text-align:center;">36.2</td>
+    <td style="text-align:center;">26.5</td>
+    <td style="text-align:center;">42.0</td>
+    <td style="text-align:center;">82.1 [77, 87]</td>
+    <td style="text-align:center;">15.8 [14.6, 17.0]</td>
   </tr>
   <tr>
-    <td>Naive Static RAG</td>
-    <td>61.2</td>
-    <td>48.7</td>
-    <td>56.8</td>
-    <td>362.1 [345, 379]</td>
-    <td>79.4 [74.8, 84.1]</td>
+    <td style="text-align:left;">Naive Static RAG</td>
+    <td style="text-align:center;">58.4</td>
+    <td style="text-align:center;">45.1</td>
+    <td style="text-align:center;">52.6</td>
+    <td style="text-align:center;">318.5 [302, 335]</td>
+    <td style="text-align:center;">68.2 [64.1, 72.3]</td>
   </tr>
   <tr>
-    <td>Uncertainty-Gated (Ours)</td>
-    <td>64.5</td>
-    <td>50.2</td>
-    <td>61.9</td>
-    <td>224.8 [214, 235]</td>
-    <td>54.2 [51.0, 57.5]</td>
+    <td style="text-align:left;">Uncertainty-Gated (Ours)</td>
+    <td style="text-align:center;">60.9</td>
+    <td style="text-align:center;">46.8</td>
+    <td style="text-align:center;">57.1</td>
+    <td style="text-align:center;">196.2 [186, 206]</td>
+    <td style="text-align:center;">46.7 [43.9, 49.6]</td>
   </tr>
-  <tr>
-    <td>Gemma-2-2B-IT</td>
-  </tr>
-  <tr>
-    <td>Closed-Book Baseline</td>
-    <td>36.2</td>
-    <td>26.5</td>
-    <td>42.0</td>
-    <td>82.1 [77, 87]</td>
-    <td>15.8 [14.6, 17.0]</td>
-  </tr>
-  <tr>
-    <td>Naive Static RAG</td>
-    <td>58.4</td>
-    <td>45.1</td>
-    <td>52.6</td>
-    <td>318.5 [302, 335]</td>
-    <td>68.2 [64.1, 72.3]</td>
-  </tr>
-  <tr>
-    <td>Uncertainty-Gated (Ours)</td>
-    <td>60.9</td>
-    <td>46.8</td>
-    <td>57.1</td>
-    <td>196.2 [186, 206]</td>
-    <td>46.7 [43.9, 49.6]</td>
-  </tr>
-  <tr>
-    <td>Note: Bracketed intervals indicate 95% bootstrap confidence intervals (10,000 resamples).</td>
+  <tr class="subgroup">
+    <td style="text-align:left;">Note: Bracketed intervals indicate 95% bootstrap confidence intervals (10,000 resamples).</td>
   </tr>
 </table>
-<p>Key Empirical Findings from Table 4:</p>
+<p>Key Empirical Findings from Table 5:</p>
 <h2 class="sec-heading">1. Accuracy Gain Over Static RAG: Across all four model architectures, Uncertainty-Gated RAG consistently outperforms Naive Static RAG in task accuracy (+2.9% on PopQA for Qwen2.5-0.5B, +3.3% for Llama-3.2-3B). This confirms that selectively bypassing retrieval on familiar topics avoids prompt distraction, yielding higher net accuracy than unconditional augmentation.</h2>
 <h2 class="sec-heading">2. Latency Reduction: Bypassing vector search and prompt chunk processing reduces mean end-to-end latency from 362.1 ms to 224.8 ms in Llama-3.2-3B (a 37.9% reduction) and from 284.6 ms to 175.4 ms in Qwen2.5-1.5B (a 38.4% reduction).</h2>
 <h2 class="sec-heading">3. Energy Conservation: GPU energy consumption per query drops from 79.4 J to 54.2 J for Llama-3.2-3B (a 31.7% saving) and from 58.7 J to 39.8 J for Qwen2.5-1.5B (a 32.2% saving).</h2>
 <h3 class="subsec-heading">4.3. Context Distraction and Noise Injection Stress-Testing</h3>
-<p>Table 5 presents the Hallucination Error Rate (HER %) across varying levels of context noise.</p>
-<div class="table-caption">Table 5. Hallucination Error Rate (HER %) under controlled context noise injection (PopQA test set)</div>
+<p>Table 6 presents the Hallucination Error Rate (HER %) across varying levels of context noise.</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 6.</span> <span class="table-caption-title">Hallucination Error Rate (HER %) under controlled context noise injection (PopQA test set)</span></div>
 <table class="data-table">
   <tr>
-    <th>Method</th>
-    <th>0% Noise (Clean)</th>
-    <th>25% Noise (Low)</th>
-    <th>50% Noise (High)</th>
-    <th>100% Contradictory</th>
+    <th style="text-align:left;">Method</th>
+    <th style="text-align:left;">0% Noise (Clean)</th>
+    <th style="text-align:left;">25% Noise (Low)</th>
+    <th style="text-align:left;">50% Noise (High)</th>
+    <th style="text-align:left;">100% Contradictory</th>
   </tr>
   <tr>
-    <td>Closed-Book Baseline</td>
-    <td>56.2%</td>
-    <td>56.2%</td>
-    <td>56.2%</td>
-    <td>56.2%</td>
+    <td style="text-align:left;">Closed-Book Baseline</td>
+    <td style="text-align:center;">56.2%</td>
+    <td style="text-align:center;">56.2%</td>
+    <td style="text-align:center;">56.2%</td>
+    <td style="text-align:center;">56.2%</td>
   </tr>
   <tr>
-    <td>Naive Static RAG</td>
-    <td>18.4%</td>
-    <td>27.9%</td>
-    <td>44.8%</td>
-    <td>68.4%</td>
+    <td style="text-align:left;">Naive Static RAG</td>
+    <td style="text-align:center;">18.4%</td>
+    <td style="text-align:center;">27.9%</td>
+    <td style="text-align:center;">44.8%</td>
+    <td style="text-align:center;">68.4%</td>
   </tr>
   <tr>
-    <td>Rowen (Ding et al., 2025) [11]</td>
-    <td>19.1%</td>
-    <td>24.2%</td>
-    <td>33.5%</td>
-    <td>46.2%</td>
+    <td style="text-align:left;">Rowen (Ding et al., 2025) [11]</td>
+    <td style="text-align:center;">19.1%</td>
+    <td style="text-align:center;">24.2%</td>
+    <td style="text-align:center;">33.5%</td>
+    <td style="text-align:center;">46.2%</td>
   </tr>
   <tr>
-    <td>Uncertainty-Gated RAG (Ours)</td>
-    <td>17.9%</td>
-    <td>21.4%</td>
-    <td>28.2%</td>
-    <td>39.1%</td>
+    <td style="text-align:left;">Uncertainty-Gated RAG (Ours)</td>
+    <td style="text-align:center;">17.9%</td>
+    <td style="text-align:center;">21.4%</td>
+    <td style="text-align:center;">28.2%</td>
+    <td style="text-align:center;">39.1%</td>
   </tr>
 </table>
 <p>Under 0% noise, Static RAG achieves an 18.4% error rate. However, when 50% distractor noise is introduced, Static RAG degrades dramatically, with error rates spiking to 44.8% (+26.4 percentage points). Under 100% contradictory noise, Static RAG hallucinates in 68.4% of cases—performing worse than the closed-book model (56.2%).</p>
 <p>In contrast, Uncertainty-Gated RAG maintains a low error rate of 28.2% under 50% noise and 39.1% under 100% noise. Because confident queries bypass retrieval, the model is never exposed to misleading distractors. In our qualitative stress test on the query &quot;Who was the first President of the United States?&quot;, the model generated &quot;George Washington&quot; closed-book (U = 0.843 nats). Under Static RAG with contradictory context asserting Thomas Jefferson was elected in 1789, the model was deceived, generating: &quot;Thomas Jefferson was unanimously elected as the first President of the United States in 1789.&quot; Uncertainty gating prevented this hallucination by executing direct parametric inference.</p>
 <h3 class="subsec-heading">4.4. Ablation Analysis: Prefix Horizon (M) and Gating Threshold (tau)</h3>
-<p>Table 6 evaluates the impact of prefix decoding horizon M in {1, 2, 3, 4, 5} tokens and gating threshold tau in {1.6, 1.8, 2.0, 2.2, 2.4} nats on PopQA using Llama-3.2-3B.</p>
-<div class="table-caption"><strong>Table 6.</strong> Ablation study on prefix horizon M and threshold &tau; (Llama-3.2-3B on PopQA)</div>
-<table class="data-table" style="width:100%;border-collapse:collapse;font-size:9pt;font-family:Arial,sans-serif;margin-bottom:6px;">
-  <thead>
-    <tr style="background:#2C3E50;color:white;text-align:center;">
-      <th style="padding:7px 10px;border:1px solid #34495e;">Prefix Horizon M</th>
-      <th style="padding:7px 10px;border:1px solid #34495e;">Threshold &tau; (nats)</th>
-      <th style="padding:7px 10px;border:1px solid #34495e;">PopQA EM (%)</th>
-      <th style="padding:7px 10px;border:1px solid #34495e;">Bypass Rate (%)</th>
-      <th style="padding:7px 10px;border:1px solid #34495e;">Gating Latency (ms)</th>
-      <th style="padding:7px 10px;border:1px solid #34495e;">Total Latency (ms)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="background:#f8f9fa;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 1</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 2.0</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">59.8</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">61.2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">4.2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">245.1</td></tr>
-    <tr style="background:#ffffff;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 2.0</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">62.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">70.5</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">8.1</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">231.8</td></tr>
-    <tr style="background:#EAF4FB;font-weight:bold;text-align:center;"><td style="padding:5px 10px;border:2px solid #2980B9;">M = 3 &#9733;</td><td style="padding:5px 10px;border:2px solid #2980B9;">&tau; = 2.0</td><td style="padding:5px 10px;border:2px solid #2980B9;">64.5</td><td style="padding:5px 10px;border:2px solid #2980B9;">74.8</td><td style="padding:5px 10px;border:2px solid #2980B9;">12.4</td><td style="padding:5px 10px;border:2px solid #2980B9;">224.8</td></tr>
-    <tr style="background:#f8f9fa;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 2.0</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">64.6</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">75.1</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">16.8</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">229.4</td></tr>
-    <tr style="background:#ffffff;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 5</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 2.0</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">64.7</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">75.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">21.2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">234.1</td></tr>
-    <tr><td colspan="6" style="background:#7F8C8D;height:2px;padding:0;border:none;"></td></tr>
-    <tr style="background:#f8f9fa;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 3</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 1.6</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">61.8</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">58.2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">12.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">262.1</td></tr>
-    <tr style="background:#ffffff;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 3</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 1.8</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">63.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">67.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">12.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">241.5</td></tr>
-    <tr style="background:#EAF4FB;font-weight:bold;text-align:center;"><td style="padding:5px 10px;border:2px solid #2980B9;">M = 3 &#9733;</td><td style="padding:5px 10px;border:2px solid #2980B9;">&tau; = 2.0</td><td style="padding:5px 10px;border:2px solid #2980B9;">64.5</td><td style="padding:5px 10px;border:2px solid #2980B9;">74.8</td><td style="padding:5px 10px;border:2px solid #2980B9;">12.4</td><td style="padding:5px 10px;border:2px solid #2980B9;">224.8</td></tr>
-    <tr style="background:#f8f9fa;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 3</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 2.2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">62.9</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">81.6</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">12.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">211.2</td></tr>
-    <tr style="background:#ffffff;text-align:center;"><td style="padding:5px 10px;border:1px solid #BDC3C7;">M = 3</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">&tau; = 2.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">60.1</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">88.2</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">12.4</td><td style="padding:5px 10px;border:1px solid #BDC3C7;">198.5</td></tr>
-  </tbody>
-</table>
-<p style="font-size:8pt;color:#2980B9;font-style:italic;margin-top:2px;margin-bottom:12px;">
-  &#9733; Highlighted rows = selected optimal configuration (M = 3, &tau; = 2.0 nats).
-  Part A (rows 1-5): varying M with &tau; fixed. Part B (rows 6-10): varying &tau; with M = 3 fixed.
-</p>
-<div style="text-align:center;margin:8px 0 16px 0;">
-  <img src="table1_ablation.png" alt="Table 6 - Ablation Study Visualization" style="max-width:98%;border:1px solid #BDC3C7;border-radius:3px;" />
-</div>
-<p>Analysis of Table 6 indicates that M = 3 tokens represents the optimal Pareto inflection point: M = 1 exhibits high variance due to syntactic sentence-starter tokens (e.g., &quot;The&quot;, &quot;In&quot;), whereas M = 5 yields marginal accuracy gains (+0.2%) while adding 8.8 ms to gating overhead. For threshold tau, tau = 2.0 nats maximizes exact match accuracy (64.5%) while maintaining a 74.8% bypass rate. Setting tau too high (tau = 2.4) inappropriately bypasses long-tail queries, causing accuracy to degrade to 60.1%.</p>
-<h3 class="subsec-heading">4.5. Quantization Impact: FP16 versus INT4 AWQ</h3>
-<p>Table 7 evaluates the interaction between 4-bit Activation-aware Weight Quantization (AWQ) and token entropy gating.</p>
-<div class="table-caption">Table 7. Quantization comparison: FP16 vs. INT4 AWQ (Llama-3.2-3B and Qwen2.5-1.5B)</div>
+<p>Table 7 evaluates the impact of prefix decoding horizon M in {1, 2, 3, 4, 5} tokens and gating threshold tau in {1.6, 1.8, 2.0, 2.2, 2.4} nats on PopQA using Llama-3.2-3B.</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 7.</span> <span class="table-caption-title">Ablation study on prefix horizon M and threshold τ (Llama-3.2-3B on PopQA)</span></div>
 <table class="data-table">
   <tr>
-    <th>Model / Precision</th>
-    <th>Memory (GB)</th>
-    <th>PopQA EM (%)</th>
-    <th>Mean Entropy (Pop)</th>
-    <th>Mean Entropy (Tail)</th>
-    <th>Delta U (nats)</th>
+    <th style="text-align:left;">Prefix Horizon M</th>
+    <th style="text-align:left;">Threshold τ (nats)</th>
+    <th style="text-align:left;">PopQA EM (%)</th>
+    <th style="text-align:left;">Bypass Rate (%)</th>
+    <th style="text-align:left;">Gating Latency (ms)</th>
+    <th style="text-align:left;">Total Latency (ms)</th>
   </tr>
   <tr>
-    <td>Llama-3.2-3B (FP16)</td>
-    <td>6.4</td>
-    <td>64.5</td>
-    <td>0.684</td>
-    <td>2.512</td>
-    <td>1.828</td>
+    <td style="text-align:left;">:---:</td>
+    <td style="text-align:center;">:---:</td>
+    <td style="text-align:center;">:---:</td>
+    <td style="text-align:center;">:---:</td>
+    <td style="text-align:center;">:---:</td>
+    <td style="text-align:center;">:---:</td>
   </tr>
   <tr>
-    <td>Llama-3.2-3B (INT4 AWQ)</td>
-    <td>2.2</td>
-    <td>63.1</td>
-    <td>0.862</td>
-    <td>2.648</td>
-    <td>1.786</td>
+    <td style="text-align:left;">M = 1</td>
+    <td style="text-align:center;">τ = 2.0</td>
+    <td style="text-align:center;">59.8</td>
+    <td style="text-align:center;">61.2</td>
+    <td style="text-align:center;">4.2</td>
+    <td style="text-align:center;">245.1</td>
   </tr>
   <tr>
-    <td>Qwen2.5-1.5B (FP16)</td>
-    <td>3.2</td>
-    <td>56.8</td>
-    <td>0.809</td>
-    <td>2.369</td>
-    <td>1.560</td>
+    <td style="text-align:left;">M = 2</td>
+    <td style="text-align:center;">τ = 2.0</td>
+    <td style="text-align:center;">62.4</td>
+    <td style="text-align:center;">70.5</td>
+    <td style="text-align:center;">8.1</td>
+    <td style="text-align:center;">231.8</td>
   </tr>
   <tr>
-    <td>Qwen2.5-1.5B (INT4 AWQ)</td>
-    <td>1.1</td>
-    <td>55.4</td>
-    <td>0.978</td>
-    <td>2.491</td>
-    <td>1.513</td>
+    <td style="text-align:left;"><strong>M = 3</strong></td>
+    <td style="text-align:center;"><strong>τ = 2.0</strong></td>
+    <td style="text-align:center;"><strong>64.5</strong></td>
+    <td style="text-align:center;"><strong>74.8</strong></td>
+    <td style="text-align:center;"><strong>12.4</strong></td>
+    <td style="text-align:center;"><strong>224.8</strong></td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">M = 4</td>
+    <td style="text-align:center;">τ = 2.0</td>
+    <td style="text-align:center;">64.6</td>
+    <td style="text-align:center;">75.1</td>
+    <td style="text-align:center;">16.8</td>
+    <td style="text-align:center;">229.4</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">M = 5</td>
+    <td style="text-align:center;">τ = 2.0</td>
+    <td style="text-align:center;">64.7</td>
+    <td style="text-align:center;">75.4</td>
+    <td style="text-align:center;">21.2</td>
+    <td style="text-align:center;">234.1</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">M = 3</td>
+    <td style="text-align:center;">τ = 1.6</td>
+    <td style="text-align:center;">61.8</td>
+    <td style="text-align:center;">58.2</td>
+    <td style="text-align:center;">12.4</td>
+    <td style="text-align:center;">262.1</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">M = 3</td>
+    <td style="text-align:center;">τ = 1.8</td>
+    <td style="text-align:center;">63.4</td>
+    <td style="text-align:center;">67.4</td>
+    <td style="text-align:center;">12.4</td>
+    <td style="text-align:center;">241.5</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;"><strong>M = 3</strong></td>
+    <td style="text-align:center;"><strong>τ = 2.0</strong></td>
+    <td style="text-align:center;"><strong>64.5</strong></td>
+    <td style="text-align:center;"><strong>74.8</strong></td>
+    <td style="text-align:center;"><strong>12.4</strong></td>
+    <td style="text-align:center;"><strong>224.8</strong></td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">M = 3</td>
+    <td style="text-align:center;">τ = 2.2</td>
+    <td style="text-align:center;">62.9</td>
+    <td style="text-align:center;">81.6</td>
+    <td style="text-align:center;">12.4</td>
+    <td style="text-align:center;">211.2</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">M = 3</td>
+    <td style="text-align:center;">τ = 2.4</td>
+    <td style="text-align:center;">60.1</td>
+    <td style="text-align:center;">88.2</td>
+    <td style="text-align:center;">12.4</td>
+    <td style="text-align:center;">198.5</td>
+  </tr>
+</table>
+<p>*Bold rows = selected optimal configuration (M = 3, τ = 2.0 nats). Part A: varying M with τ fixed. Part B: varying τ with M = 3 fixed.*</p>
+<p>Analysis of Table 7 indicates that M = 3 tokens represents the optimal Pareto inflection point: M = 1 exhibits high variance due to syntactic sentence-starter tokens (e.g., &quot;The&quot;, &quot;In&quot;), whereas M = 5 yields marginal accuracy gains (+0.2%) while adding 8.8 ms to gating overhead. For threshold tau, tau = 2.0 nats maximizes exact match accuracy (64.5%) while maintaining a 74.8% bypass rate. Setting tau too high (tau = 2.4) inappropriately bypasses long-tail queries, causing accuracy to degrade to 60.1%.</p>
+<h3 class="subsec-heading">4.5. Quantization Impact: FP16 versus INT4 AWQ</h3>
+<p>Table 8 evaluates the interaction between 4-bit Activation-aware Weight Quantization (AWQ) and token entropy gating.</p>
+<div class="table-caption"><span class="table-caption-lbl">Table 8.</span> <span class="table-caption-title">Quantization comparison: FP16 vs. INT4 AWQ (Llama-3.2-3B and Qwen2.5-1.5B)</span></div>
+<table class="data-table">
+  <tr>
+    <th style="text-align:left;">Model / Precision</th>
+    <th style="text-align:left;">Memory (GB)</th>
+    <th style="text-align:left;">PopQA EM (%)</th>
+    <th style="text-align:left;">Mean Entropy (Pop)</th>
+    <th style="text-align:left;">Mean Entropy (Tail)</th>
+    <th style="text-align:left;">Delta U (nats)</th>
+  </tr>
+  <tr>
+    <td style="text-align:left;">Llama-3.2-3B (FP16)</td>
+    <td style="text-align:center;">6.4</td>
+    <td style="text-align:center;">64.5</td>
+    <td style="text-align:center;">0.684</td>
+    <td style="text-align:center;">2.512</td>
+    <td style="text-align:center;">1.828</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">Llama-3.2-3B (INT4 AWQ)</td>
+    <td style="text-align:center;">2.2</td>
+    <td style="text-align:center;">63.1</td>
+    <td style="text-align:center;">0.862</td>
+    <td style="text-align:center;">2.648</td>
+    <td style="text-align:center;">1.786</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">Qwen2.5-1.5B (FP16)</td>
+    <td style="text-align:center;">3.2</td>
+    <td style="text-align:center;">56.8</td>
+    <td style="text-align:center;">0.809</td>
+    <td style="text-align:center;">2.369</td>
+    <td style="text-align:center;">1.560</td>
+  </tr>
+  <tr>
+    <td style="text-align:left;">Qwen2.5-1.5B (INT4 AWQ)</td>
+    <td style="text-align:center;">1.1</td>
+    <td style="text-align:center;">55.4</td>
+    <td style="text-align:center;">0.978</td>
+    <td style="text-align:center;">2.491</td>
+    <td style="text-align:center;">1.513</td>
   </tr>
 </table>
 <p>Quantization to INT4 AWQ compresses model memory footprints by over 65% (from 6.4 GB to 2.2 GB for Llama-3.2-3B) with minimal accuracy degradation (-1.4% EM). Due to slight weight rounding dispersion, INT4 models exhibit an upward baseline entropy shift of approximately +0.17 to +0.18 nats across all queries. Crucially, the relative entropy separation margin Delta U remains stable (1.786 nats for INT4 vs. 1.828 nats for FP16), confirming that uncertainty gating remains fully effective on 4-bit edge hardware with a minor threshold adjustment (+0.15 nats).</p>

@@ -168,30 +168,40 @@ def build_aair_html(md_path, html_path):
   table.data-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 14px 0 10px 0;
+    margin: 14px 0 12px 0;
     font-size: 8.5pt;
+    border-top: 1.2px solid #000;
+    border-bottom: 1.2px solid #000;
   }
   table.data-table th, table.data-table td {
-    border-top: 1px solid #333;
-    border-bottom: 1px solid #333;
-    padding: 5px 6px;
+    border: none;
+    padding: 5px 8px;
     text-align: left;
   }
   table.data-table th {
-    background-color: #f2f5f8;
+    background-color: transparent;
     font-weight: bold;
-    border-bottom: 1.5px solid #000;
+    border-bottom: 1.0px solid #000;
+    color: #000;
   }
-  table.data-table tr:hover {
-    background-color: #fcfcfc;
+  table.data-table tr.subgroup td {
+    font-weight: bold;
+    font-style: italic;
+    background-color: transparent;
+    padding-top: 6px;
   }
   .table-caption {
     font-size: 9pt;
+    margin-top: 16px;
+    margin-bottom: 5px;
+    text-align: center;
+    color: #000;
+  }
+  .table-caption-lbl {
     font-weight: bold;
-    margin-top: 14px;
-    margin-bottom: 4px;
-    text-align: left;
-    color: #1a202c;
+  }
+  .table-caption-title {
+    font-style: italic;
   }
   .figure-box {
     text-align: center;
@@ -363,13 +373,51 @@ def build_aair_html(md_path, html_path):
             i += 1
             continue
 
-        # Table Captions
-        if re.match(r'^Table\s+[0-9R]+[\.:]', line):
-            current_table_caption = line.strip()
+        # Table Captions (Strictly centered above table)
+        tc_m = re.match(r'^\*?\*?(Table\s+[0-9R]+[\.:].*?)\*?\*?$', line)
+        if tc_m:
+            current_table_caption = tc_m.group(1).replace("**", "").strip()
             i += 1
             continue
 
-        # Table Parsing
+        # Pipe Table Parsing
+        if line.strip().startswith('|') and line.strip().endswith('|'):
+            p_rows = []
+            while i < len(lines):
+                cur_l = lines[i].strip()
+                if not cur_l.startswith('|') or not cur_l.endswith('|'):
+                    break
+                if re.match(r'^\|[\s:\-]+\|$', cur_l):
+                    i += 1
+                    continue
+                cells = [c.strip() for c in cur_l.split('|')[1:-1]]
+                if cells:
+                    p_rows.append(cells)
+                i += 1
+
+            if p_rows:
+                if current_table_caption:
+                    m = re.match(r'^(Table\s+[0-9R]+[\.:]?)\s*(.*)', current_table_caption)
+                    if m:
+                        lbl = html.escape(m.group(1).rstrip('.') + '.')
+                        ttl = html.escape(m.group(2).strip())
+                        html_out.append(f'<div class="table-caption"><span class="table-caption-lbl">{lbl}</span> <span class="table-caption-title">{ttl}</span></div>')
+                    else:
+                        html_out.append(f'<div class="table-caption">{html.escape(current_table_caption)}</div>')
+                    current_table_caption = ""
+                html_out.append('<table class="data-table">')
+                for r_idx, row in enumerate(p_rows):
+                    tag = 'th' if r_idx == 0 else 'td'
+                    html_out.append('  <tr>')
+                    for c_idx, cell in enumerate(row):
+                        c_clean = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html.escape(cell))
+                        align = 'left' if c_idx == 0 or r_idx == 0 else 'center'
+                        html_out.append(f'    <{tag} style="text-align:{align};">{c_clean}</{tag}>')
+                    html_out.append('  </tr>')
+                html_out.append('</table>')
+            continue
+
+        # ASCII / Dashed Table Parsing
         if set(line.strip()) in [{'-'}, {'─'}, {'='}] and len(line.strip()) > 5:
             i += 1
             t_rows = []
@@ -387,14 +435,23 @@ def build_aair_html(md_path, html_path):
 
             if t_rows:
                 if current_table_caption:
-                    html_out.append(f'<div class="table-caption">{html.escape(current_table_caption)}</div>')
+                    m = re.match(r'^(Table\s+[0-9R]+[\.:]?)\s*(.*)', current_table_caption)
+                    if m:
+                        lbl = html.escape(m.group(1).rstrip('.') + '.')
+                        ttl = html.escape(m.group(2).strip())
+                        html_out.append(f'<div class="table-caption"><span class="table-caption-lbl">{lbl}</span> <span class="table-caption-title">{ttl}</span></div>')
+                    else:
+                        html_out.append(f'<div class="table-caption">{html.escape(current_table_caption)}</div>')
                     current_table_caption = ""
                 html_out.append('<table class="data-table">')
                 for r_idx, row in enumerate(t_rows):
                     tag = 'th' if r_idx == 0 else 'td'
-                    html_out.append('  <tr>')
-                    for cell in row:
-                        html_out.append(f'    <{tag}>{html.escape(cell)}</{tag}>')
+                    is_sub = (len(row) == 1 and r_idx > 0)
+                    tr_cls = ' class="subgroup"' if is_sub else ''
+                    html_out.append(f'  <tr{tr_cls}>')
+                    for c_idx, cell in enumerate(row):
+                        align = 'left' if c_idx == 0 or r_idx == 0 else 'center'
+                        html_out.append(f'    <{tag} style="text-align:{align};">{html.escape(cell)}</{tag}>')
                     html_out.append('  </tr>')
                 html_out.append('</table>')
             continue
