@@ -46,8 +46,7 @@ Submitted by **Omkar Sachin Shedage** (Roll No: TE-56) is a bonafide work carrie
 
 | | | |
 | :---: | :---: | :---: |
-| <br><br>**Prof. Snehal Bhoge**<br>Seminar Guide | <br><br>**Prof. Name of Coordinator**<br>Seminar Coordinator | <br><br>**Dr. Manisha Hajare / Prof. S. P. Naik**<br>HOD, AI&DS Engineering |
-| | <br>**Dr. M. M. Sardeshmukh**<br>Director, JSPM NTC, Pune | |
+| <br><br>**Prof. Snehal Bhoge**<br>Seminar Guide | <br><br>**Prof. Hitesh Rahangdale**<br>Seminar Coordinator | <br><br>**Dr. Manisha Hajare**<br>HOD, AI&DS Engineering |
 
 **Place:** Pune  
 **Date:** ____________  
@@ -73,7 +72,7 @@ With immense pleasure and gratitude, I present this technical seminar report ent
 
 First and foremost, I express my profound gratitude and heartfelt respect to my Seminar Guide, **Prof. Snehal Bhoge**, for her continuous encouragement, intellectual guidance, critical technical suggestions, and patient mentoring throughout the conceptualization, benchmarking, and documentation of this work.
 
-I express my sincere thanks to **Dr. Manisha Hajare / Prof. S. P. Naik**, Head of the Department of Artificial Intelligence and Data Science Engineering, and the Departmental Seminar Coordinator for their organizational support and providing state-of-the-art computational laboratory facilities.
+I express my sincere thanks to **Dr. Manisha Hajare**, Head of the Department of Artificial Intelligence and Data Science Engineering, and Seminar Coordinator **Prof. Hitesh Rahangdale** for their organizational support and providing state-of-the-art computational laboratory facilities.
 
 I am deeply indebted to **Dr. M. M. Sardeshmukh**, Director of JSPM’s Narhe Technical Campus, for creating an inspiring academic and research-oriented institutional environment.
 

@@ -279,13 +279,13 @@ def build_seminar_document():
     c1 = sig_table.cell(0, 1)
     c1.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
     c1.paragraphs[0].paragraph_format.line_spacing = 1.15
-    c1.paragraphs[0].add_run("\n\n\nProf. Name of Coordinator\n").bold = True
+    c1.paragraphs[0].add_run("\n\n\nProf. Hitesh Rahangdale\n").bold = True
     c1.paragraphs[0].add_run("Seminar Coordinator\nJSPM NTC, Pune").font.size = Pt(9.5)
 
     c2 = sig_table.cell(0, 2)
     c2.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
     c2.paragraphs[0].paragraph_format.line_spacing = 1.15
-    c2.paragraphs[0].add_run("\n\n\nDr. Manisha Hajare / Prof. S. P. Naik\n").bold = True
+    c2.paragraphs[0].add_run("\n\n\nDr. Manisha Hajare\n").bold = True
     c2.paragraphs[0].add_run("HOD, AI&DS Engineering\nJSPM NTC, Pune").font.size = Pt(9.5)
 
     # Row 1: Director
@@ -374,8 +374,10 @@ def build_seminar_document():
     p_a_body.add_run(", for her continuous encouragement, intellectual guidance, critical technical suggestions, and patient mentoring throughout the conceptualization, benchmarking, and documentation of this work. Her expertise in generative models and natural language processing provided the foundation for completing this investigation.\n\n")
 
     p_a_body.add_run("I express my sincere thanks to ")
-    p_a_body.add_run("Dr. Manisha Hajare / Prof. S. P. Naik").bold = True
-    p_a_body.add_run(", Head of the Department of Artificial Intelligence and Data Science Engineering, and the Departmental Seminar Coordinator for their organizational support and providing state-of-the-art computational laboratory facilities.\n\n")
+    p_a_body.add_run("Dr. Manisha Hajare").bold = True
+    p_a_body.add_run(", Head of the Department of Artificial Intelligence and Data Science Engineering, and Seminar Coordinator ")
+    p_a_body.add_run("Prof. Hitesh Rahangdale").bold = True
+    p_a_body.add_run(" for their organizational support and providing state-of-the-art computational laboratory facilities.\n\n")
 
     p_a_body.add_run("I am deeply indebted to ")
     p_a_body.add_run("Dr. M. M. Sardeshmukh").bold = True
