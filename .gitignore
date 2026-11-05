@@ -27,3 +27,7 @@ desktop.ini
 .vscode/
 *.swp
 *.swo
+
+# Standalone anonymized code repository (managed independently for double-blind submission)
+06_anonymized_code_repository/
+
