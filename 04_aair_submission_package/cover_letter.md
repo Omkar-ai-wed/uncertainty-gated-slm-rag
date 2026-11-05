@@ -1,6 +1,6 @@
 # AAIR JOURNAL SUBMISSION COVER LETTER
 
-**Date:** October 30, 2026  
+**Date:** November 5, 2026  
 **To:** Dr. Osman Özkaraca, Editor-in-Chief  
 Editorial Board of *Advances in Artificial Intelligence Research* (AAIR)  
 DergiPark Platform (e-ISSN: 2757-7422)  
