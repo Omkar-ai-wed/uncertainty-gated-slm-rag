@@ -60,7 +60,12 @@
 ---
 
 ### Step 5: DergiPark Portal Submission Workflow (Step-by-Step)
-1. **Login:** Log in to https://dergipark.org.tr with your ORCID credentials (`omkarshedage1977@gmail.com`).
+1. **Register & Login (Direct Email):**
+   * If you have not created a DergiPark account previously, **do NOT use the direct ORCID button to sign up** (DergiPark will display an *"An Error Occurred"* banner if no matching profile exists yet).
+   * Go directly to the registration page: **https://dergipark.org.tr/en/register**
+   * Register with your name (**Omkar Shedage**), affiliation (**JSPM Narhe Technical Campus**), and email (`omkarshedage1977@gmail.com`).
+   * Check your email for the verification link from DergiPark (TÜBİTAK ULAKBİM).
+   * Once registered and verified, log in at **https://dergipark.org.tr/en/login**. (You can optionally link your ORCID under *Profile -> Connected Accounts* once inside).
 2. **Navigate:** Search for `Advances in Artificial Intelligence Research` (e-ISSN: `2757-7422`).
 3. **Initiate:** Click the green **"Submit a Manuscript"** button on the journal homepage.
 4. **Metadata Entry:**
