@@ -171,7 +171,7 @@ def create_aair_document(md_path, docx_path):
         p_head.alignment = WD_ALIGN_PARAGRAPH.LEFT
         p_head.paragraph_format.space_after = Pt(4)
         
-        hdr_text = "AAIR vol 6 (2026) 42-59" if is_blinded else "Shedage et al. / AAIR vol 6 (2026) 42-59"
+        hdr_text = "Advances in Artificial Intelligence Research (AAIR)  |  Manuscript Submission Draft" if is_blinded else "Shedage & Bhoge  /  Advances in Artificial Intelligence Research (AAIR)  |  Submission Draft"
         r_head = p_head.add_run(hdr_text)
         r_head.font.name = 'Cambria'
         r_head.font.size = Pt(8.5)
@@ -205,31 +205,33 @@ def create_aair_document(md_path, docx_path):
     run_h1 = p_header.add_run("Advances in Artificial Intelligence Research (AAIR)")
     run_h1.bold = True
     run_h1.font.size = Pt(9.5)
-    p_header.add_run("   |   Vol. 6, pp. 42-59, 2026   |   doi: 10.54569/aair.2048112\n")
-    run_h2 = p_header.add_run("ISSN: 2757-7422   |   www.dergipark.com/aair/   |   Published online: October 30, 2026")
+    p_header.add_run("   |   e-ISSN: 2757-7422   |   https://dergipark.org.tr/en/pub/aair\n")
+    if is_blinded:
+        run_h2 = p_header.add_run("Original Research Article   |   Manuscript Prepared for Double-Blind Peer Review")
+    else:
+        run_h2 = p_header.add_run("Original Research Article   |   Manuscript Submission Draft   |   Academic Year: 2025–26")
     run_h2.font.size = Pt(8.5)
     run_h2.font.color.rgb = RGBColor(100, 100, 100)
 
     # Divider line
     p_div = doc.add_paragraph()
-    p_div.paragraph_format.space_after = Pt(8)
+    p_div.paragraph_format.space_after = Pt(12)
     p_div_run = p_div.add_run("─" * 78)
     p_div_run.font.color.rgb = RGBColor(180, 180, 180)
 
-    # Corresponding author & Dates
-    p_meta = doc.add_paragraph()
-    p_meta.paragraph_format.space_after = Pt(12)
-    r_corr = p_meta.add_run("*Corresponding author: ")
-    r_corr.bold = True
-    r_corr.font.size = Pt(8.5)
-    if is_blinded:
-        p_meta.add_run("[anonymized.email@blinded.edu]\n").font.size = Pt(8.5)
-    else:
+    # In an unblinded manuscript, include authentic submission status.
+    # In a blinded manuscript, no corresponding author or dates appear on the main text (stored on Title Page).
+    if not is_blinded:
+        p_meta = doc.add_paragraph()
+        p_meta.paragraph_format.space_after = Pt(10)
+        r_corr = p_meta.add_run("*Corresponding author: ")
+        r_corr.bold = True
+        r_corr.font.size = Pt(8.5)
         p_meta.add_run("omkarshedage1977@gmail.com\n").font.size = Pt(8.5)
-    r_dates = p_meta.add_run("Received: 14/08/2026; Received in revised form: 22/09/2026; Accepted: 18/10/2026.")
-    r_dates.font.size = Pt(8)
-    r_dates.italic = True
-    r_dates.font.color.rgb = RGBColor(100, 100, 100)
+        r_dates = p_meta.add_run("Submission Draft (November 2026); Status: Under Peer Review.")
+        r_dates.font.size = Pt(8)
+        r_dates.italic = True
+        r_dates.font.color.rgb = RGBColor(100, 100, 100)
 
     # Title
     p_title = doc.add_paragraph()
@@ -262,7 +264,8 @@ def create_aair_document(md_path, docx_path):
     p_aff.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_aff.paragraph_format.space_after = Pt(14)
     if is_blinded:
-        r_aff = p_aff.add_run("[Anonymized Institution for Double-Blind Review]")
+        r_aff = p_aff.add_run("[Author identities, institutional affiliations, and contact details are documented on the Title Page]")
+        r_aff.italic = True
     else:
         r_aff = p_aff.add_run("1,2 Department of Artificial Intelligence and Data Science, JSPM Narhe Technical Campus, Savitribai Phule Pune University, Pune, Maharashtra, India")
     r_aff.font.size = Pt(8.5)
