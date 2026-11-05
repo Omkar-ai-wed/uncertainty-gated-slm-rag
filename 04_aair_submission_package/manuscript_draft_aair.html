@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Uncertainty-Gated Selective Retrieval in Quantized Small Language Models - AAIR Journal Paper</title>
 <style>
   @page {
@@ -9,12 +10,12 @@
     margin: 25mm 20mm 25mm 20mm;
   }
   body {
-    font-family: 'Cambria', 'Georgia', serif;
+    font-family: 'Cambria', 'Georgia', 'Times New Roman', serif;
     font-size: 10pt;
-    line-height: 1.35;
+    line-height: 1.4;
     color: #111;
     margin: 0 auto;
-    max-width: 840px;
+    max-width: 860px;
     padding: 30px;
     background-color: #fff;
     text-align: justify;
@@ -23,7 +24,7 @@
     width: 100%;
     border-collapse: collapse;
     border-bottom: 2px solid #000;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     font-size: 8.5pt;
   }
   .header-table td {
@@ -32,98 +33,109 @@
   }
   .header-left {
     text-align: left;
-    line-height: 1.25;
+    line-height: 1.3;
   }
   .header-right {
     text-align: right;
-    line-height: 1.25;
+    line-height: 1.3;
   }
   .journal-title {
     font-weight: bold;
     font-size: 9.5pt;
+    color: #0d233a;
   }
   .doi-link {
     color: #003399;
     text-decoration: underline;
   }
   .meta-sub {
-    font-size: 8pt;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    line-height: 1.3;
+    font-size: 8.5pt;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    line-height: 1.35;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
   }
   h1.paper-title {
     font-size: 15pt;
     font-weight: bold;
     text-align: center;
-    margin: 20px 0 16px 0;
+    margin: 22px 0 16px 0;
     line-height: 1.3;
+    color: #0d233a;
   }
   .author-block {
     text-align: center;
-    font-size: 10.5pt;
-    margin-bottom: 12px;
+    font-size: 11pt;
+    margin-bottom: 8px;
   }
   .author-name {
-    font-weight: normal;
+    font-weight: bold;
   }
   .affiliation-block {
     text-align: center;
-    font-size: 8.5pt;
-    color: #333;
-    margin-bottom: 18px;
+    font-size: 9pt;
+    color: #444;
+    margin-bottom: 20px;
     line-height: 1.35;
   }
   .abstract-box {
-    margin: 15px 0;
-    background: #fbfbfb;
-    border-left: 3px solid #0288d1;
-    padding: 10px 14px;
+    margin: 18px 0;
+    background: #fbfcfe;
+    border-left: 3.5px solid #0288d1;
+    padding: 12px 16px;
     border-radius: 2px;
   }
   .abstract-title {
     font-weight: bold;
     font-size: 10pt;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     color: #01579b;
   }
   .abstract-text {
     font-style: italic;
     font-size: 9pt;
     text-align: justify;
-    line-height: 1.38;
+    line-height: 1.42;
+    color: #222;
   }
   .keywords-block {
     font-size: 9pt;
-    margin-top: 8px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 22px;
   }
   .keywords-label {
     font-weight: bold;
     font-style: italic;
+    color: #01579b;
   }
   h2.sec-heading {
     font-size: 11pt;
     font-weight: bold;
-    margin-top: 22px;
-    margin-bottom: 6px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 2px;
+    margin-top: 26px;
+    margin-bottom: 8px;
+    border-bottom: 1.2px solid #cbd5e1;
+    padding-bottom: 3px;
     color: #0d233a;
+    text-align: left;
   }
   h3.subsec-heading {
     font-size: 10pt;
     font-weight: bold;
-    margin-top: 14px;
-    margin-bottom: 4px;
-    color: #1a365d;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    color: #1e3a8a;
+    text-align: left;
   }
   h4.subsubsec-heading {
     font-size: 9.5pt;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 12px;
     margin-bottom: 4px;
-    color: #2d3748;
+    color: #334155;
+    text-align: left;
   }
   p {
     margin-top: 4px;
@@ -133,22 +145,24 @@
   p.no-indent {
     text-indent: 0;
   }
-  ul {
+  ol, ul {
     margin-top: 4px;
-    margin-bottom: 8px;
-    padding-left: 25px;
+    margin-bottom: 10px;
+    padding-left: 28px;
   }
   li {
-    margin-bottom: 4px;
+    margin-bottom: 5px;
+    line-height: 1.38;
   }
   .equation {
     text-align: center;
-    margin: 10px 0;
+    margin: 12px 0;
     font-style: italic;
-    background: #fafafa;
-    padding: 6px 12px;
+    background: #f8fafc;
+    padding: 8px 14px;
     border-radius: 4px;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #e2e8f0;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
   }
   .eq-number {
     float: right;
@@ -158,15 +172,16 @@
   table.data-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 14px 0 12px 0;
+    margin: 14px 0 14px 0;
     font-size: 8.5pt;
-    border-top: 1.2px solid #000;
-    border-bottom: 1.2px solid #000;
+    border-top: 1.5px solid #000;
+    border-bottom: 1.5px solid #000;
   }
   table.data-table th, table.data-table td {
     border: none;
-    padding: 5px 8px;
+    padding: 6px 8px;
     text-align: left;
+    vertical-align: middle;
   }
   table.data-table th {
     background-color: transparent;
@@ -177,13 +192,13 @@
   table.data-table tr.subgroup td {
     font-weight: bold;
     font-style: italic;
-    background-color: transparent;
-    padding-top: 6px;
+    background-color: #f8fafc;
+    padding-top: 7px;
   }
   .table-caption {
     font-size: 9pt;
-    margin-top: 16px;
-    margin-bottom: 5px;
+    margin-top: 18px;
+    margin-bottom: 6px;
     text-align: center;
     color: #000;
   }
@@ -193,47 +208,47 @@
   .table-caption-title {
     font-style: italic;
   }
-  .figure-box {
+  figure.figure-box {
     text-align: center;
-    margin: 18px 0 10px 0;
+    margin: 22px 0 16px 0;
   }
-  .figure-caption {
+  figcaption.figure-caption {
     font-size: 9pt;
     font-weight: bold;
     text-align: center;
     margin-top: 8px;
-    color: #1a202c;
+    color: #0f172a;
   }
   .algorithm-box {
     margin: 14px 0;
-    padding: 10px 14px;
-    background: #fdfdfd;
-    border: 1px solid #cfd8dc;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
     border-radius: 4px;
-    font-family: Consolas, monospace;
+    font-family: Consolas, 'Courier New', monospace;
     font-size: 8pt;
-    line-height: 1.35;
+    line-height: 1.4;
     white-space: pre-wrap;
     text-align: left;
   }
   .reference-list {
     font-size: 8.5pt;
-    line-height: 1.3;
+    line-height: 1.35;
     padding-left: 20px;
     list-style-type: none;
   }
   .reference-list li {
     text-indent: -1.8em;
     padding-left: 1.8em;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
   .page-footer {
-    border-top: 1px solid #ccc;
-    margin-top: 30px;
-    padding-top: 6px;
-    font-size: 7.5pt;
-    text-align: right;
-    color: #555;
+    border-top: 1px solid #cbd5e1;
+    margin-top: 36px;
+    padding-top: 8px;
+    font-size: 8pt;
+    text-align: center;
+    color: #64748b;
   }
 </style>
 </head>
@@ -243,21 +258,21 @@
   <tr>
     <td class="header-left">
       <span class="journal-title">Advances in Artificial Intelligence Research (AAIR)</span><br>
-      ISSN 2757-7422<br>
-      <a href="https://dergipark.com/aair/" class="doi-link">www.dergipark.com/aair/</a>
+      e-ISSN: 2757-7422<br>
+      <a href="https://dergipark.org.tr/en/pub/aair" class="doi-link" target="_blank">https://dergipark.org.tr/en/pub/aair</a>
     </td>
     <td class="header-right">
-      Vol. 6, pp. 42-59, 2026<br>
-      doi: <span class="doi-link">10.54569/aair.2048112</span><br>
-      Published online: October 30, 2026
+      <strong>Original Research Article</strong><br>
+      Target Journal: AAIR (DergiPark / ULAKBİM TR Dizin)<br>
+      Academic Year: 2025–26 &nbsp;|&nbsp; Peer-Review Submission Draft
     </td>
   </tr>
 </table>
 
 <div class="meta-sub">
-  <strong>*Corresponding author</strong><br>
-  <em>E-mail address:</em> omkarshedage1977@gmail.com<br>
-  <em>Received:</em> 14/08/2026; <em>Received in revised form:</em> 22/09/2026; <em>Accepted:</em> 18/10/2026.
+  <strong>*Corresponding Author:</strong> Omkar Sachin Shedage &lt;<a href="mailto:omkarshedage1977@gmail.com" class="doi-link">omkarshedage1977@gmail.com</a>&gt;<br>
+  <strong>Department & Institution:</strong> Department of Artificial Intelligence and Data Science, JSPM Narhe Technical Campus, Savitribai Phule Pune University, Pune, Maharashtra 411041, India<br>
+  <strong>GitHub Repository:</strong> <a href="https://github.com/Omkar-ai-wed/uncertainty-gated-slm-rag" class="doi-link" target="_blank">https://github.com/Omkar-ai-wed/uncertainty-gated-slm-rag</a>
 </div>
 
 <h1 class="paper-title">Uncertainty-Gated Selective Retrieval in Quantized Small Language Models: Mitigating Noise-Induced Hallucination and Latency in Edge Deployment</h1>
@@ -286,8 +301,7 @@
 <p>The deployment of autoregressive generative transformers across enterprise and edge environments has exposed a fundamental tension between linguistic fluency and factual veracity [1], [2]. In high-consequence operational domains—such as point-of-care clinical triage, statutory compliance analysis, and financial auditing—unsubstantiated model confabulation introduces catastrophic operational and legal liabilities [3], [4].</p>
 <p>To ground autoregressive generation in authoritative evidence, Retrieval-Augmented Generation (RAG) has attained widespread adoption [5]. Conventional RAG frameworks transform external reference documents into dense mathematical representations; upon receiving a user prompt, an approximate nearest-neighbor retriever identifies the top-k semantically proximate excerpts and concatenates them directly into the language model&#x27;s input prompt. Concurrently, operational priorities have spurred a massive transition toward Small Language Models (SLMs, 0.5B–8B parameters), exemplified by Alibaba Qwen2.5, Meta Llama-3.2, and Google Gemma-2 [6], [7]. Compact architectures offer decisive advantages: they execute locally on consumer laptops, embedded automotive ECUs, and localized edge servers, guaranteeing absolute data sovereignty, complying with statutory privacy mandates (e.g., GDPR, HIPAA), and eliminating recurring per-token cloud API expenditures.</p>
 <p>Nevertheless, an analysis of current RAG implementations reveals an unexamined structural assumption: document retrieval is treated as an obligatory, always-active prerequisite. Every prompt unconditionally initiates vector space indexing, passage extraction, and prompt expansion, regardless of whether the prompt targets a universally recognized fact or an obscure piece of long-tail trivia. In this paper, we demonstrate that unconditional retrieval triggers two severe operational bottlenecks in resource-bounded SLMs:</p>
-<h2 class="sec-heading">1. Context Distraction and Hallucination Amplification: Dense vector retrievers frequently return top-k excerpts contaminated with topical distractors, unverified web noise, or conflicting statements. Unlike 70B+ frontier models endowed with redundant attention heads capable of selective context filtering, sub-8B architectures possess limited cross-attention capacity [8], [9]. When presented with distracting prompt context, an SLM over-allocates attention mass to misleading tokens, constructing false rationalizations and hallucinating on facts that it was fully capable of answering correctly from internal parametric memory.</h2>
-<h2 class="sec-heading">2. Computational Inefficiency and Energy Dissipation: The overwhelming majority of enterprise and consumer queries target common entities that SLMs encode with high fidelity. Forcing dense vector searches and ingesting hundreds of context tokens for every interaction multiplies query latency by up to 300% and rapidly drains battery capacity on edge devices.</h2>
+<ol><li><strong>Context Distraction and Hallucination Amplification:</strong>  Dense vector retrievers frequently return top-k excerpts contaminated with topical distractors, unverified web noise, or conflicting statements. Unlike 70B+ frontier models endowed with redundant attention heads capable of selective context filtering, sub-8B architectures possess limited cross-attention capacity [8], [9]. When presented with distracting prompt context, an SLM over-allocates attention mass to misleading tokens, constructing false rationalizations and hallucinating on facts that it was fully capable of answering correctly from internal parametric memory.</li><li><strong>Computational Inefficiency and Energy Dissipation:</strong>  The overwhelming majority of enterprise and consumer queries target common entities that SLMs encode with high fidelity. Forcing dense vector searches and ingesting hundreds of context tokens for every interaction multiplies query latency by up to 300% and rapidly drains battery capacity on edge devices.</li></ol>
 <p>While dynamic and iterative RAG variants have recently been investigated [10], [11], existing approaches exhibit critical limitations: they either necessitate labor-intensive supervised instruction tuning with custom reflection tokens [10]—which cannot be retrofitted post-hoc to third-party or quantized models—or they rely on multi-candidate consistency generation across multilingual prompt perturbations [11], which triples inference latency and erases the computational advantages of compact models.</p>
 <p>To resolve these challenges, this study presents Uncertainty-Gated Selective Retrieval, an algorithmic mechanism that monitors an SLM&#x27;s internal predictive Shannon entropy over an early prefix decoding horizon (M = 3 tokens). The gating decision executes in under 15 milliseconds, requiring zero gradient updates, zero fine-tuning, and zero auxiliary neural classifiers.</p>
 <p>The primary contributions of this work are summarized as follows:</p>
@@ -346,9 +360,7 @@
 <p>This section details the benchmark datasets, knowledge base construction, system architecture, mathematical formulations, hardware testbed specifications, and evaluation protocols.</p>
 <h3 class="subsec-heading">3.1. Datasets</h3>
 <p>To evaluate the system across diverse knowledge distributions, three established benchmark datasets were utilized (Table 2):</p>
-<h2 class="sec-heading">1. PopQA [19]: A large-scale factual question-answering benchmark consisting of 14,267 queries across 16 relationship types. Each entity is linked to its monthly Wikipedia pageview count, enabling precise stratification between high-popularity entities (&gt;10^5 monthly views, testing parametric memory) and long-tail obscure entities (&lt;10^2 monthly views, testing epistemic uncertainty).</h2>
-<h2 class="sec-heading">2. Natural Questions (NQ-Open) [20]: A standard benchmark containing 3,610 open-domain queries derived from real Google search logs with human-annotated factual answers.</h2>
-<h2 class="sec-heading">3. TruthfulQA [21]: An adversarial benchmark comprising 817 questions across 38 categories designed to elicit human false beliefs, superstitions, and common misconceptions.</h2>
+<ol><li><strong>PopQA [19]:</strong>  A large-scale factual question-answering benchmark consisting of 14,267 queries across 16 relationship types. Each entity is linked to its monthly Wikipedia pageview count, enabling precise stratification between high-popularity entities (&gt;10^5 monthly views, testing parametric memory) and long-tail obscure entities (&lt;10^2 monthly views, testing epistemic uncertainty).</li><li><strong>Natural Questions (NQ-Open) [20]:</strong>  A standard benchmark containing 3,610 open-domain queries derived from real Google search logs with human-annotated factual answers.</li><li><strong>TruthfulQA [21]:</strong>  An adversarial benchmark comprising 817 questions across 38 categories designed to elicit human false beliefs, superstitions, and common misconceptions.</li></ol>
 <div class="table-caption"><span class="table-caption-lbl">Table 2.</span> <span class="table-caption-title">Benchmark dataset characteristics and distribution</span></div>
 <table class="data-table">
   <tr>
@@ -385,9 +397,9 @@
 <p>Stage 2 (Dynamic Routing Decision): The calculated entropy U(q) is compared against an empirically calibrated threshold tau. If U(q) &lt; tau, the query is classified as possessing High Parametric Confidence: the system bypasses retrieval entirely and completes the response using internal model weights. If U(q) &gt;= tau, the query is classified as exhibiting Epistemic Uncertainty, triggering external retrieval.</p>
 <p>Stage 3 (Grounded Generation and Noise Filtering): For uncertain queries, the FAISS vector index retrieves the top-k candidate passages. A semantic cosine similarity filter discards any passage whose similarity score falls below a threshold gamma (default gamma = 0.65) to eliminate completely irrelevant noise. The remaining grounded passages and query are concatenated into the prompt, and the SLM generates the verified answer.</p>
 
-<div class="figure-box">
+<figure class="figure-box">
   <img src="figure1_architecture.png" alt="Figure 1: Architectural flowchart of the Uncertainty-Gated Selective Retrieval system" style="max-width: 98%; height: auto; border: 1px solid #c5d0dc; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin: 8px auto; display: block;" />
-  <div class="figure-caption">Figure 1. Architectural flowchart of the Uncertainty-Gated Selective Retrieval system.</div>
+  <figcaption class="figure-caption">Figure 1. Architectural flowchart of the Uncertainty-Gated Selective Retrieval system.</figcaption>
   
   <details style="max-width: 98%; margin: 12px auto; text-align: left; background: #fbfcfe; border: 1px solid #d0d7de; border-radius: 6px; padding: 8px 12px; font-size: 8.5pt;">
     <summary style="cursor: pointer; font-weight: bold; color: #0969da;">Click to view Mermaid Diagram Source</summary>
@@ -429,7 +441,7 @@
     class RET,FIL,GEN warn;
     class G decision;</pre>
   </details>
-</div>
+</figure>
 
 <div class="algorithm-box">Algorithm 1: Uncertainty-Gated Selective Retrieval Decision Logic
 Input:  Query q, SLM θ, FAISS index F, threshold τ, horizon M, top-k k,
@@ -468,10 +480,7 @@ Output: Generated answer y
 <div class="equation">P_theta(y | q, D*_k) = prod_{t=1}^T P_theta(y_t | q, D*_k, y_&lt;t) <span class="eq-number">(6)</span></div>
 <h3 class="subsec-heading">3.5. Noise Injection and Adversarial Stress-Testing</h3>
 <p>To rigorously investigate context distraction, an adversarial noise stress-testing protocol was implemented. For each test query, retrieved context D_k (k = 5) was programmatically manipulated across four distinct noise levels:</p>
-<h2 class="sec-heading">1. Clean Context (0% Noise): All 5 passages are top-ranked relevant documents containing gold answers.</h2>
-<h2 class="sec-heading">2. Low Distraction (25% Noise): Top-3 relevant passages + 1 random Wikipedia distractor + 1 topical distractor (sharing query keywords but asserting incorrect facts).</h2>
-<h2 class="sec-heading">3. High Distraction (50% Noise): Top-2 relevant passages + 3 random/adversarial distractors.</h2>
-<h2 class="sec-heading">4. Contradictory Misinformation (100% Noise): Passages containing explicit, plausible falsehoods directly contradicting gold facts (e.g., asserting Thomas Jefferson was the first US president).</h2>
+<ol><li><strong>Clean Context (0% Noise):</strong>  All 5 passages are top-ranked relevant documents containing gold answers.</li><li><strong>Low Distraction (25% Noise):</strong>  Top-3 relevant passages + 1 random Wikipedia distractor + 1 topical distractor (sharing query keywords but asserting incorrect facts).</li><li><strong>High Distraction (50% Noise):</strong>  Top-2 relevant passages + 3 random/adversarial distractors.</li><li><strong>Contradictory Misinformation (100% Noise):</strong>  Passages containing explicit, plausible falsehoods directly contradicting gold facts (e.g., asserting Thomas Jefferson was the first US president).</li></ol>
 <h3 class="subsec-heading">3.6. Model Selection and Edge Hardware Configuration</h3>
 <h4 class="subsubsec-heading">3.6.1. Evaluated Model Architectures</h4>
 <p>Experiments were executed across three leading open-weight SLM families:</p>
@@ -543,9 +552,7 @@ Output: Generated answer y
 </table>
 <h3 class="subsec-heading">3.7. Evaluation Metrics and Hardware Telemetry</h3>
 <p>System performance was evaluated across three dimensions:</p>
-<h2 class="sec-heading">1. Task Accuracy: Exact Match (EM %) and token-level macro F1-score against reference annotations.</h2>
-<h2 class="sec-heading">2. Grounding &amp; Hallucination: Ragas Faithfulness [25] and SelfCheckGPT consistency scores [26]. Hallucination Error Rate (HER %) is defined as the proportion of generated responses containing factually incorrect assertions.</h2>
-<h2 class="sec-heading">3. Hardware Telemetry: Mean Time-to-First-Token (TTFT, ms) and total query latency (ms) measured via PyTorch CUDA event synchronization. Physical GPU power draw was sampled at 50ms intervals using the NVIDIA Management Library (pynvml v11.5.0). Total query energy E_q (in Joules) was computed by integrating instantaneous power P(t) over query duration Delta t, subtracting baseline idle power (22.4 W) to isolate true computational marginal cost:</h2>
+<ol><li><strong>Task Accuracy:</strong>  Exact Match (EM %) and token-level macro F1-score against reference annotations.</li><li><strong>Grounding &amp; Hallucination:</strong>  Ragas Faithfulness [25] and SelfCheckGPT consistency scores [26]. Hallucination Error Rate (HER %) is defined as the proportion of generated responses containing factually incorrect assertions.</li><li><strong>Hardware Telemetry:</strong>  Mean Time-to-First-Token (TTFT, ms) and total query latency (ms) measured via PyTorch CUDA event synchronization. Physical GPU power draw was sampled at 50ms intervals using the NVIDIA Management Library (pynvml v11.5.0). Total query energy E_q (in Joules) was computed by integrating instantaneous power P(t) over query duration Delta t, subtracting baseline idle power (22.4 W) to isolate true computational marginal cost:</li></ol>
 <div class="equation">E_q = integral_{0}^{t_end} (P(t) - P_idle) dt approx sum_{i=1}^N (P(t_i) - P_idle) * Delta t <span class="eq-number">(7)</span></div>
 <h3 class="subsec-heading">3.8. Statistical Robustness</h3>
 <p>Statistical significance was established using two-sided Wilcoxon signed-rank tests on paired performance scores across all test splits. Nonparametric bootstrap resampling with 10,000 iterations was applied to estimate 95% confidence intervals (CI) for mean accuracy improvements, latency reductions, and entropy separation margins.</p>
@@ -740,9 +747,7 @@ Output: Generated answer y
   <tr class="note-row"><td colspan="6" style="text-align:left;">Note: Bracketed intervals indicate 95% bootstrap confidence intervals (10,000 resamples).</td></tr>
 </table>
 <p>Key Empirical Findings from Table 5:</p>
-<h2 class="sec-heading">1. Accuracy Gain Over Static RAG: Across all four model architectures, Uncertainty-Gated RAG consistently outperforms Naive Static RAG in task accuracy (+2.9% on PopQA for Qwen2.5-0.5B, +3.3% for Llama-3.2-3B). This confirms that selectively bypassing retrieval on familiar topics avoids prompt distraction, yielding higher net accuracy than unconditional augmentation.</h2>
-<h2 class="sec-heading">2. Latency Reduction: Bypassing vector search and prompt chunk processing reduces mean end-to-end latency from 362.1 ms to 224.8 ms in Llama-3.2-3B (a 37.9% reduction) and from 284.6 ms to 175.4 ms in Qwen2.5-1.5B (a 38.4% reduction).</h2>
-<h2 class="sec-heading">3. Energy Conservation: GPU energy consumption per query drops from 79.4 J to 54.2 J for Llama-3.2-3B (a 31.7% saving) and from 58.7 J to 39.8 J for Qwen2.5-1.5B (a 32.2% saving).</h2>
+<ol><li><strong>Accuracy Gain Over Static RAG:</strong>  Across all four model architectures, Uncertainty-Gated RAG consistently outperforms Naive Static RAG in task accuracy (+2.9% on PopQA for Qwen2.5-0.5B, +3.3% for Llama-3.2-3B). This confirms that selectively bypassing retrieval on familiar topics avoids prompt distraction, yielding higher net accuracy than unconditional augmentation.</li><li><strong>Latency Reduction:</strong>  Bypassing vector search and prompt chunk processing reduces mean end-to-end latency from 362.1 ms to 224.8 ms in Llama-3.2-3B (a 37.9% reduction) and from 284.6 ms to 175.4 ms in Qwen2.5-1.5B (a 38.4% reduction).</li><li><strong>Energy Conservation:</strong>  GPU energy consumption per query drops from 79.4 J to 54.2 J for Llama-3.2-3B (a 31.7% saving) and from 58.7 J to 39.8 J for Qwen2.5-1.5B (a 32.2% saving).</li></ol>
 <h3 class="subsec-heading">4.3. Context Distraction and Noise Injection Stress-Testing</h3>
 <p>Table 6 presents the Hallucination Error Rate (HER %) across varying levels of context noise.</p>
 <div class="table-caption"><span class="table-caption-lbl">Table 6.</span> <span class="table-caption-title">Hallucination Error Rate (HER %) under controlled context noise injection (PopQA test set)</span></div>
@@ -796,14 +801,6 @@ Output: Generated answer y
     <th style="text-align:left;">Bypass Rate (%)</th>
     <th style="text-align:left;">Gating Latency (ms)</th>
     <th style="text-align:left;">Total Latency (ms)</th>
-  </tr>
-  <tr>
-    <td style="text-align:left;">:---:</td>
-    <td style="text-align:left;">:---:</td>
-    <td style="text-align:left;">:---:</td>
-    <td style="text-align:left;">:---:</td>
-    <td style="text-align:left;">:---:</td>
-    <td style="text-align:left;">:---:</td>
   </tr>
   <tr>
     <td style="text-align:left;">M = 1</td>
@@ -937,9 +934,7 @@ Output: Generated answer y
 <h2 class="sec-heading">5. Discussion</h2>
 <h3 class="subsec-heading">5.1. General Evaluation of Findings</h3>
 <p>The empirical results demonstrate that unconditional retrieval in RAG pipelines represents an unnecessary and often detrimental architectural choice for Small Language Models. By implementing a lightweight prefix predictive entropy gate, our system achieves three distinct operational advantages:</p>
-<h2 class="sec-heading">1. Immunity to Context Distraction: By reserving retrieval strictly for queries where parametric confidence is genuinely deficient, the model is shielded from misleading, conflicting, or irrelevant distractors on familiar topics.</h2>
-<h2 class="sec-heading">2. Latency and Compute Efficiency: Bypassing FAISS index queries and context attention processing on 75% of popular queries cuts average inference latency by 38.2% and power draw by 31.5%, establishing an optimal Pareto frontier between accuracy and operational cost.</h2>
-<h2 class="sec-heading">3. Post-Hoc Universality: Unlike Self-RAG [10], which requires expensive multi-task pre-training, our approach operates post-hoc on off-the-shelf and quantized open weights without modifying a single parameter.</h2>
+<ol><li><strong>Immunity to Context Distraction:</strong>  By reserving retrieval strictly for queries where parametric confidence is genuinely deficient, the model is shielded from misleading, conflicting, or irrelevant distractors on familiar topics.</li><li><strong>Latency and Compute Efficiency:</strong>  Bypassing FAISS index queries and context attention processing on 75% of popular queries cuts average inference latency by 38.2% and power draw by 31.5%, establishing an optimal Pareto frontier between accuracy and operational cost.</li><li><strong>Post-Hoc Universality:</strong>  Unlike Self-RAG [10], which requires expensive multi-task pre-training, our approach operates post-hoc on off-the-shelf and quantized open weights without modifying a single parameter.</li></ol>
 <h3 class="subsec-heading">5.2. Theoretical Implications: Attention Allocation in Constrained Architectures</h3>
 <p>Our findings provide empirical support for theoretical analyses of cross-attention mechanisms in compact transformers [8], [16]. In 70B+ parameter models, redundant attention heads allow the network to simultaneously attend to retrieved context while retaining internal parametric representations. In contrast, sub-8B models possess constrained attention head budgets; prompt-injected tokens compete directly for representation capacity against positional and query embeddings. When noisy context is injected, the attention weights inadvertently allocate high probability mass to distractor tokens, overriding parametric memory. Uncertainty gating circumvents this vulnerability by ensuring that noisy context is never introduced when parametric certainty is high.</p>
 <h3 class="subsec-heading">5.3. Real-World Applications and Sectoral Utility</h3>
@@ -948,10 +943,7 @@ Output: Generated answer y
 <h3 class="subsec-heading">5.4. Ethical Use and Limitations</h3>
 <p>From an ethical perspective, this framework operates strictly as a decision-support tool. It reduces hallucination risks but does not guarantee absolute factual infallibility.</p>
 <p>Four limitations must be acknowledged:</p>
-<h2 class="sec-heading">1. Syntactic versus Semantic Entropy Ambiguity: Queries characterized by high syntactic ambiguity or atypical phrasing can trigger elevated prefix entropy despite the model possessing underlying factual familiarity, resulting in conservative unnecessary retrieval.</h2>
-<h2 class="sec-heading">2. Domain-Specific Calibration: The gating threshold tau was calibrated primarily on open-domain factual corpora. Deploying in specialized technical domains (e.g., patent law, biochemistry) may require domain-specific threshold recalibration.</h2>
-<h2 class="sec-heading">3. Multi-Hop Complex Reasoning: The current framework evaluates single-turn factual QA. Multi-hop queries requiring iterative, multi-step retrieval loops represent a more complex setting where intermediate reasoning steps must be audited for uncertainty.</h2>
-<h2 class="sec-heading">4. Fully Synthetic Noise Modeling: While our distractor injection experiments utilized real Wikipedia passages, real-world enterprise noise often involves subtle temporal obsolescence or partial document redactions, which warrants further field study.</h2>
+<ol><li><strong>Syntactic versus Semantic Entropy Ambiguity:</strong>  Queries characterized by high syntactic ambiguity or atypical phrasing can trigger elevated prefix entropy despite the model possessing underlying factual familiarity, resulting in conservative unnecessary retrieval.</li><li><strong>Domain-Specific Calibration:</strong>  The gating threshold tau was calibrated primarily on open-domain factual corpora. Deploying in specialized technical domains (e.g., patent law, biochemistry) may require domain-specific threshold recalibration.</li><li><strong>Multi-Hop Complex Reasoning:</strong>  The current framework evaluates single-turn factual QA. Multi-hop queries requiring iterative, multi-step retrieval loops represent a more complex setting where intermediate reasoning steps must be audited for uncertainty.</li><li><strong>Fully Synthetic Noise Modeling:</strong>  While our distractor injection experiments utilized real Wikipedia passages, real-world enterprise noise often involves subtle temporal obsolescence or partial document redactions, which warrants further field study.</li></ol>
 <h2 class="sec-heading">6. Conclusion and Future Work</h2>
 <p>This study introduced an Uncertainty-Gated Selective Retrieval framework designed to resolve context distraction and compute inefficiency in Small Language Models under RAG. By probing predictive Shannon entropy over an early prefix decoding horizon (M = 3 tokens), our framework dynamically separates parametric certainty from epistemic ignorance in under 15 milliseconds. Evaluated across 18,000+ queries from PopQA, Natural Questions, and TruthfulQA, the system achieves a statistically significant entropy separation margin of 1.560 nats, bypasses retrieval on 75.0% of standard queries, cuts latency by 38.2%, and lowers GPU power draw by 31.5%. Under adversarial noise stress-testing, selective gating prevents context-induced hallucinations on known facts, cutting hallucination error rates by up to 29.3 percentage points.</p>
 <p>Future work will focus on: (i) extending internal uncertainty gating to multimodal vision-language models (VLMs) handling document diagrams and chart understanding; (ii) developing dynamic, token-level adaptive threshold calibration that adjusts tau based on query syntactic complexity; and (iii) deploying the architecture onto embedded edge NPUs (e.g., Apple Neural Engine and Qualcomm Snapdragon) for real-time mobile benchmarking.</p>
@@ -964,10 +956,37 @@ Output: Generated answer y
 <h2 class="sec-heading">Acknowledgement</h2>
 <p>This research was conducted as part of the undergraduate academic seminar and capstone research project in the Department of Artificial Intelligence and Data Science at JSPM Narhe Technical Campus, Savitribai Phule Pune University. The authors express gratitude to the department faculty and laboratory staff for providing computational workstation resources.</p>
 <h2 class="sec-heading">References</h2>
-<ul class="reference-list"><li>[1] J. Achiam et al., &quot;GPT-4 Technical Report,&quot; arXiv preprint arXiv:2303.08774, (2023); doi: <a href="<a href="https://doi.org/10.48550/arXiv.2303.08774."" class="doi-link" target="_blank">https://doi.org/10.48550/arXiv.2303.08774."</a> class="doi-link" target="_blank">10.48550/arXiv.2303.08774.</a></li><li>[2] Z. Ji et al., &quot;Survey of Hallucination in Natural Language Generation,&quot; ACM Computing Surveys 55(12) (2023) 1–38; doi: <a href="<a href="https://doi.org/10.1145/3571730."" class="doi-link" target="_blank">https://doi.org/10.1145/3571730."</a> class="doi-link" target="_blank">10.1145/3571730.</a></li><li>[3] E. Topol, &quot;Deep Medicine: How Artificial Intelligence Can Make Healthcare Human Again,&quot; Basic Books, New York, (2019).</li><li>[4] S. Birogul, O. Sahin, and H. Asgarli, &quot;Exploring the Impact of ISO/IEC 42001:2023 AI Management Standard on Organizational Practices,&quot; Advances in Artificial Intelligence Research 5(1) (2025) 14–22; doi: <a href="<a href="https://doi.org/10.54569/aair.1709628."" class="doi-link" target="_blank">https://doi.org/10.54569/aair.1709628."</a> class="doi-link" target="_blank">10.54569/aair.1709628.</a></li><li>[5] P. Lewis et al., &quot;Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,&quot; In: Advances in Neural Information Processing Systems (NeurIPS 2020) 33 (2020) 9459–9474; doi: <a href="<a href="https://doi.org/10.5555/3495724.3496517."" class="doi-link" target="_blank">https://doi.org/10.5555/3495724.3496517."</a> class="doi-link" target="_blank">10.5555/3495724.3496517.</a></li><li>[6] Meta AI, &quot;The Llama 3 Herd of Models,&quot; arXiv preprint arXiv:2407.21783, (2024); doi: <a href="<a href="https://doi.org/10.48550/arXiv.2407.21783."" class="doi-link" target="_blank">https://doi.org/10.48550/arXiv.2407.21783."</a> class="doi-link" target="_blank">10.48550/arXiv.2407.21783.</a></li><li>[7] Qwen Team, &quot;Qwen2.5: A Party of Foundation Models,&quot; Qwen Blog, (2024). <a href="https://qwenlm.github.io/blog/qwen2.5/" class="doi-link" target="_blank">https://qwenlm.github.io/blog/qwen2.5/</a></li><li>[8] F. Shi et al., &quot;Large Language Models Easily Distracted by Irrelevant Context,&quot; In: Proceedings of the 40th International Conference on Machine Learning (ICML 2023), (2023) 31272–31286; doi: <a href="<a href="https://doi.org/10.5555/3618408.3619712."" class="doi-link" target="_blank">https://doi.org/10.5555/3618408.3619712."</a> class="doi-link" target="_blank">10.5555/3618408.3619712.</a></li><li>[9] O. Yoran, T. Wolfson, O. Ram, and J. Berant, &quot;Making Retrieval-Augmented Language Models Robust to Irrelevant and Contradictory Context,&quot; In: International Conference on Learning Representations (ICLR 2024), (2024). <a href="https://openreview.net/forum?id=vE4vBwR2bF" class="doi-link" target="_blank">https://openreview.net/forum?id=vE4vBwR2bF</a></li><li>[10] A. Asai et al., &quot;Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection,&quot; In: International Conference on Learning Representations (ICLR 2024), (2024). <a href="https://openreview.net/forum?id=e7ItZFsPsn" class="doi-link" target="_blank">https://openreview.net/forum?id=e7ItZFsPsn</a></li><li>[11] Y. Ding, Y. Zhang, N. Du, and B. Xiao, &quot;Rowen: Selective Retrieval-Augmented Generation via Consistency-Based Hallucination Detection,&quot; In: Proceedings of the ACM SIGIR-AP 2025, (2025) 112–121; doi: <a href="<a href="https://doi.org/10.1145/3673791.3698421."" class="doi-link" target="_blank">https://doi.org/10.1145/3673791.3698421."</a> class="doi-link" target="_blank">10.1145/3673791.3698421.</a></li><li>[12] Y. Gao et al., &quot;Retrieval-Augmented Generation for Large Language Models: A Survey,&quot; arXiv preprint arXiv:2312.10997, (2024); doi: <a href="<a href="https://doi.org/10.48550/arXiv.2312.10997."" class="doi-link" target="_blank">https://doi.org/10.48550/arXiv.2312.10997."</a> class="doi-link" target="_blank">10.48550/arXiv.2312.10997.</a></li><li>[13] J. Feng, Y. Shen, and K. Ding, &quot;Hyper-RAG: Knowledge-Augmented Generation over Hypergraphs for Complex Reasoning,&quot; Nature Communications 17(1) (2026) 1420; doi: <a href="<a href="https://doi.org/10.1038/s41467-026-01420-x."" class="doi-link" target="_blank">https://doi.org/10.1038/s41467-026-01420-x."</a> class="doi-link" target="_blank">10.1038/s41467-026-01420-x.</a></li><li>[14] H. Kaplan and F. A. Senel, &quot;Development of a Hybrid Artificial Intelligence System to Reduce the Risk of False Positives in Turkish Emails,&quot; Advances in Artificial Intelligence Research 6 (2026) 18–33; doi: <a href="<a href="https://doi.org/10.54569/aair.1971719."" class="doi-link" target="_blank">https://doi.org/10.54569/aair.1971719."</a> class="doi-link" target="_blank">10.54569/aair.1971719.</a></li><li>[15] Y. Wang, P. Li, and J. Liu, &quot;Self-Knowledge Guided Retrieval Augmentation for Large Language Models,&quot; In: Findings of the Association for Computational Linguistics: EMNLP 2023, (2023) 10340–10352; doi: <a href="<a href="https://doi.org/10.18653/v1/2023.findings-emnlp.692."" class="doi-link" target="_blank">https://doi.org/10.18653/v1/2023.findings-emnlp.692."</a> class="doi-link" target="_blank">10.18653/v1/2023.findings-emnlp.692.</a></li><li>[16] A. Vaswani et al., &quot;Attention Is All You Need,&quot; In: Advances in Neural Information Processing Systems (NeurIPS 2017) 30 (2017) 5998–6008.</li><li>[17] J. Lin et al., &quot;AWQ: Activation-aware Weight Quantization for On-Device LLM Compression and Acceleration,&quot; In: Proceedings of Machine Learning and Systems (MLSys 2024) 6 (2024) 87–100.</li><li>[18] E. Frantar, S. Ashkboos, T. Hoefler, and D. Alistarh, &quot;GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers,&quot; In: International Conference on Learning Representations (ICLR 2023), (2023).</li><li>[19] A. Mallen et al., &quot;When Not to Trust Language Models: Investigating Effectiveness of Parametric and Non-Parametric Memories,&quot; In: Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL 2023), (2023) 9802–9822; doi: <a href="<a href="https://doi.org/10.18653/v1/2023.acl-long.546."" class="doi-link" target="_blank">https://doi.org/10.18653/v1/2023.acl-long.546."</a> class="doi-link" target="_blank">10.18653/v1/2023.acl-long.546.</a></li><li>[20] T. Kwiatkowski et al., &quot;Natural Questions: A Benchmark for Question Answering Research,&quot; Transactions of the Association for Computational Linguistics 7 (2019) 452–466; doi: <a href="<a href="https://doi.org/10.1162/tacl_a_00276."" class="doi-link" target="_blank">https://doi.org/10.1162/tacl_a_00276."</a> class="doi-link" target="_blank">10.1162/tacl_a_00276.</a></li><li>[21] S. Lin, J. Hilton, and O. Evans, &quot;TruthfulQA: Measuring How Models Mimic Human Falsehoods,&quot; In: Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022), (2022) 3214–3252; doi: <a href="<a href="https://doi.org/10.18653/v1/2022.acl-long.229."" class="doi-link" target="_blank">https://doi.org/10.18653/v1/2022.acl-long.229."</a> class="doi-link" target="_blank">10.18653/v1/2022.acl-long.229.</a></li><li>[22] S. Xiao et al., &quot;C-Pack: Packaged Resources to Advance General Chinese Embedding,&quot; In: Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR 2024), (2024) 456–466.</li><li>[23] J. Johnson, M. Douze, and H. Jegou, &quot;Billion-scale similarity search with GPUs,&quot; IEEE Transactions on Big Data 7(3) (2021) 535–547; doi: <a href="<a href="https://doi.org/10.1109/TBDATA.2019.2921572."" class="doi-link" target="_blank">https://doi.org/10.1109/TBDATA.2019.2921572."</a> class="doi-link" target="_blank">10.1109/TBDATA.2019.2921572.</a></li><li>[24] Gemma Team, &quot;Gemma 2: Improving Open Language Models at a Practical Scale,&quot; arXiv preprint arXiv:2408.00118, (2024); doi: <a href="<a href="https://doi.org/10.48550/arXiv.2408.00118."" class="doi-link" target="_blank">https://doi.org/10.48550/arXiv.2408.00118."</a> class="doi-link" target="_blank">10.48550/arXiv.2408.00118.</a></li><li>[25] S. Es, J. James, L. Espinosa-Anke, and S. Schockaert, &quot;Ragas: Automated Evaluation of Retrieval Augmented Generation,&quot; In: Proceedings of the 18th Conference of the European Chapter of the Association for Computational Linguistics (EACL 2024): System Demonstrations, (2024) 150–158; doi: <a href="<a href="https://doi.org/10.18653/v1/2024.eacl-demo.16."" class="doi-link" target="_blank">https://doi.org/10.18653/v1/2024.eacl-demo.16."</a> class="doi-link" target="_blank">10.18653/v1/2024.eacl-demo.16.</a></li><li>[26] P. Manakul, A. Liusie, and M. J. F. Gales, &quot;SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models,&quot; In: Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP 2023), (2023) 9004–9017; doi: <a href="<a href="https://doi.org/10.18653/v1/2023.emnlp-main.557."" class="doi-link" target="_blank">https://doi.org/10.18653/v1/2023.emnlp-main.557."</a> class="doi-link" target="_blank">10.18653/v1/2023.emnlp-main.557.</a></li><li>[27] Y. Aktas, T. Yigit, M. Ersoy, and I. S. Uncu, &quot;Semantic Consensus-Based Multi-LLM Architecture for TÜBİTAK Proposal Generation,&quot; Advances in Artificial Intelligence Research 6 (2026) 10–17; doi: <a href="<a href="https://doi.org/10.5541/aair.1894025."" class="doi-link" target="_blank">https://doi.org/10.5541/aair.1894025."</a> class="doi-link" target="_blank">10.5541/aair.1894025.</a></li><li>[28] B. Demir and O. O. Ergun, &quot;Customer Churn Prediction with Machine Learning Methods In Telecommunication Industry,&quot; Advances in Artificial Intelligence Research 5(1) (2025) 32–41; doi: <a href="<a href="https://doi.org/10.54569/aair.1709274."" class="doi-link" target="_blank">https://doi.org/10.54569/aair.1709274."</a> class="doi-link" target="_blank">10.54569/aair.1709274.</a></li></ul>
+<ul class="reference-list"><li>[1] J. Achiam et al., &quot;GPT-4 Technical Report,&quot; arXiv preprint arXiv:2303.08774, (2023); doi: <a href="https://doi.org/10.48550/arXiv.2303.08774." class="doi-link" target="_blank">10.48550/arXiv.2303.08774.</a></li>
+<li>[2] Z. Ji et al., &quot;Survey of Hallucination in Natural Language Generation,&quot; ACM Computing Surveys 55(12) (2023) 1–38; doi: <a href="https://doi.org/10.1145/3571730." class="doi-link" target="_blank">10.1145/3571730.</a></li>
+<li>[3] E. Topol, &quot;Deep Medicine: How Artificial Intelligence Can Make Healthcare Human Again,&quot; Basic Books, New York, (2019).</li>
+<li>[4] S. Birogul, O. Sahin, and H. Asgarli, &quot;Exploring the Impact of ISO/IEC 42001:2023 AI Management Standard on Organizational Practices,&quot; Advances in Artificial Intelligence Research 5(1) (2025) 14–22; doi: <a href="https://doi.org/10.54569/aair.1709628." class="doi-link" target="_blank">10.54569/aair.1709628.</a></li>
+<li>[5] P. Lewis et al., &quot;Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,&quot; In: Advances in Neural Information Processing Systems (NeurIPS 2020) 33 (2020) 9459–9474; doi: <a href="https://doi.org/10.5555/3495724.3496517." class="doi-link" target="_blank">10.5555/3495724.3496517.</a></li>
+<li>[6] Meta AI, &quot;The Llama 3 Herd of Models,&quot; arXiv preprint arXiv:2407.21783, (2024); doi: <a href="https://doi.org/10.48550/arXiv.2407.21783." class="doi-link" target="_blank">10.48550/arXiv.2407.21783.</a></li>
+<li>[7] Qwen Team, &quot;Qwen2.5: A Party of Foundation Models,&quot; Qwen Blog, (2024). <a href="https://qwenlm.github.io/blog/qwen2.5/" class="doi-link" target="_blank">https://qwenlm.github.io/blog/qwen2.5/</a></li>
+<li>[8] F. Shi et al., &quot;Large Language Models Easily Distracted by Irrelevant Context,&quot; In: Proceedings of the 40th International Conference on Machine Learning (ICML 2023), (2023) 31272–31286; doi: <a href="https://doi.org/10.5555/3618408.3619712." class="doi-link" target="_blank">10.5555/3618408.3619712.</a></li>
+<li>[9] O. Yoran, T. Wolfson, O. Ram, and J. Berant, &quot;Making Retrieval-Augmented Language Models Robust to Irrelevant and Contradictory Context,&quot; In: International Conference on Learning Representations (ICLR 2024), (2024). <a href="https://openreview.net/forum?id=vE4vBwR2bF" class="doi-link" target="_blank">https://openreview.net/forum?id=vE4vBwR2bF</a></li>
+<li>[10] A. Asai et al., &quot;Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection,&quot; In: International Conference on Learning Representations (ICLR 2024), (2024). <a href="https://openreview.net/forum?id=e7ItZFsPsn" class="doi-link" target="_blank">https://openreview.net/forum?id=e7ItZFsPsn</a></li>
+<li>[11] Y. Ding, Y. Zhang, N. Du, and B. Xiao, &quot;Rowen: Selective Retrieval-Augmented Generation via Consistency-Based Hallucination Detection,&quot; In: Proceedings of the ACM SIGIR-AP 2025, (2025) 112–121; doi: <a href="https://doi.org/10.1145/3673791.3698421." class="doi-link" target="_blank">10.1145/3673791.3698421.</a></li>
+<li>[12] Y. Gao et al., &quot;Retrieval-Augmented Generation for Large Language Models: A Survey,&quot; arXiv preprint arXiv:2312.10997, (2024); doi: <a href="https://doi.org/10.48550/arXiv.2312.10997." class="doi-link" target="_blank">10.48550/arXiv.2312.10997.</a></li>
+<li>[13] J. Feng, Y. Shen, and K. Ding, &quot;Hyper-RAG: Knowledge-Augmented Generation over Hypergraphs for Complex Reasoning,&quot; Nature Communications 17(1) (2026) 1420; doi: <a href="https://doi.org/10.1038/s41467-026-01420-x." class="doi-link" target="_blank">10.1038/s41467-026-01420-x.</a></li>
+<li>[14] H. Kaplan and F. A. Senel, &quot;Development of a Hybrid Artificial Intelligence System to Reduce the Risk of False Positives in Turkish Emails,&quot; Advances in Artificial Intelligence Research 6 (2026) 18–33; doi: <a href="https://doi.org/10.54569/aair.1971719." class="doi-link" target="_blank">10.54569/aair.1971719.</a></li>
+<li>[15] Y. Wang, P. Li, and J. Liu, &quot;Self-Knowledge Guided Retrieval Augmentation for Large Language Models,&quot; In: Findings of the Association for Computational Linguistics: EMNLP 2023, (2023) 10340–10352; doi: <a href="https://doi.org/10.18653/v1/2023.findings-emnlp.692." class="doi-link" target="_blank">10.18653/v1/2023.findings-emnlp.692.</a></li>
+<li>[16] A. Vaswani et al., &quot;Attention Is All You Need,&quot; In: Advances in Neural Information Processing Systems (NeurIPS 2017) 30 (2017) 5998–6008.</li>
+<li>[17] J. Lin et al., &quot;AWQ: Activation-aware Weight Quantization for On-Device LLM Compression and Acceleration,&quot; In: Proceedings of Machine Learning and Systems (MLSys 2024) 6 (2024) 87–100.</li>
+<li>[18] E. Frantar, S. Ashkboos, T. Hoefler, and D. Alistarh, &quot;GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers,&quot; In: International Conference on Learning Representations (ICLR 2023), (2023).</li>
+<li>[19] A. Mallen et al., &quot;When Not to Trust Language Models: Investigating Effectiveness of Parametric and Non-Parametric Memories,&quot; In: Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL 2023), (2023) 9802–9822; doi: <a href="https://doi.org/10.18653/v1/2023.acl-long.546." class="doi-link" target="_blank">10.18653/v1/2023.acl-long.546.</a></li>
+<li>[20] T. Kwiatkowski et al., &quot;Natural Questions: A Benchmark for Question Answering Research,&quot; Transactions of the Association for Computational Linguistics 7 (2019) 452–466; doi: <a href="https://doi.org/10.1162/tacl_a_00276." class="doi-link" target="_blank">10.1162/tacl_a_00276.</a></li>
+<li>[21] S. Lin, J. Hilton, and O. Evans, &quot;TruthfulQA: Measuring How Models Mimic Human Falsehoods,&quot; In: Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022), (2022) 3214–3252; doi: <a href="https://doi.org/10.18653/v1/2022.acl-long.229." class="doi-link" target="_blank">10.18653/v1/2022.acl-long.229.</a></li>
+<li>[22] S. Xiao et al., &quot;C-Pack: Packaged Resources to Advance General Chinese Embedding,&quot; In: Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR 2024), (2024) 456–466.</li>
+<li>[23] J. Johnson, M. Douze, and H. Jegou, &quot;Billion-scale similarity search with GPUs,&quot; IEEE Transactions on Big Data 7(3) (2021) 535–547; doi: <a href="https://doi.org/10.1109/TBDATA.2019.2921572." class="doi-link" target="_blank">10.1109/TBDATA.2019.2921572.</a></li>
+<li>[24] Gemma Team, &quot;Gemma 2: Improving Open Language Models at a Practical Scale,&quot; arXiv preprint arXiv:2408.00118, (2024); doi: <a href="https://doi.org/10.48550/arXiv.2408.00118." class="doi-link" target="_blank">10.48550/arXiv.2408.00118.</a></li>
+<li>[25] S. Es, J. James, L. Espinosa-Anke, and S. Schockaert, &quot;Ragas: Automated Evaluation of Retrieval Augmented Generation,&quot; In: Proceedings of the 18th Conference of the European Chapter of the Association for Computational Linguistics (EACL 2024): System Demonstrations, (2024) 150–158; doi: <a href="https://doi.org/10.18653/v1/2024.eacl-demo.16." class="doi-link" target="_blank">10.18653/v1/2024.eacl-demo.16.</a></li>
+<li>[26] P. Manakul, A. Liusie, and M. J. F. Gales, &quot;SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models,&quot; In: Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP 2023), (2023) 9004–9017; doi: <a href="https://doi.org/10.18653/v1/2023.emnlp-main.557." class="doi-link" target="_blank">10.18653/v1/2023.emnlp-main.557.</a></li>
+<li>[27] Y. Aktas, T. Yigit, M. Ersoy, and I. S. Uncu, &quot;Semantic Consensus-Based Multi-LLM Architecture for TÜBİTAK Proposal Generation,&quot; Advances in Artificial Intelligence Research 6 (2026) 10–17; doi: <a href="https://doi.org/10.5541/aair.1894025." class="doi-link" target="_blank">10.5541/aair.1894025.</a></li>
+<li>[28] B. Demir and O. O. Ergun, &quot;Customer Churn Prediction with Machine Learning Methods In Telecommunication Industry,&quot; Advances in Artificial Intelligence Research 5(1) (2025) 32–41; doi: <a href="https://doi.org/10.54569/aair.1709274." class="doi-link" target="_blank">10.54569/aair.1709274.</a></li></ul>
 
 <div class="page-footer">
-  Advances in Artificial Intelligence Research (AAIR) &nbsp;|&nbsp; e-ISSN: 2757-7422 &nbsp;|&nbsp; Published online: October 30, 2026
+  Advances in Artificial Intelligence Research (AAIR) &nbsp;|&nbsp; e-ISSN: 2757-7422 &nbsp;|&nbsp; Manuscript Submission Draft
 </div>
 </body>
 </html>
